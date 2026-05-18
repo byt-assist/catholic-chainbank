@@ -1,14 +1,36 @@
-const translations = {
-    en: { title:"Chain Bank", candles:"🕯️ Candles", charity:"🤝 Charity", staking:"💎 Staking", dao:"🗳️ DAO", memory:"📖 Memory", back:"← Back", forGod:"📿 For God", againstGod:"💀 Against God", eternal:"✨ Eternal Candle", donate:"🤝 Donate", swap:"🔄 Buy tokens", stake:"💎 Staking", yourWallet:"Your Solana wallet", yourName:"Your name", save:"Save", txid:"TXID", verify:"Verify", review:"Review", refer:"Refer friend", burned:"Burned", raised:"Raised", goal:"Goal", create:"Create", active:"Active", myStakes:"My stakes", apr:"APR", days:"days", voteFor:"Vote FOR", voteAgainst:"Vote AGAINST", myVotes:"My votes", memoryName:"Name of departed", memoryText:"Prayer", addMemory:"Add to memory", burning:"Burning...", verified:"Verified!", error:"Error" },
-    ru: { title:"Chain Bank", candles:"🕯️ Свечи", charity:"🤝 Благотворительность", staking:"💎 Стейкинг", dao:"🗳️ DAO", memory:"📖 Книга памяти", back:"← На главную", forGod:"📿 За Бога", againstGod:"💀 Против Бога", eternal:"✨ Вечная свеча", donate:"🤝 Пожертвовать", swap:"🔄 Купить токены", stake:"💎 Стейкинг", yourWallet:"Ваш Solana кошелёк", yourName:"Ваше имя", save:"Сохранить", txid:"TXID", verify:"Проверить", review:"Отзыв", refer:"Приведи друга", burned:"Сожжено", raised:"Собрано", goal:"Цель", create:"Создать", active:"Активные", myStakes:"Мои стейки", apr:"APY", days:"дней", voteFor:"Голосовать ЗА", voteAgainst:"Голосовать ПРОТИВ", myVotes:"Мои голоса", memoryName:"Имя усопшего", memoryText:"Молитва", addMemory:"Добавить в книгу", burning:"Сжигаем...", verified:"Проверено!", error:"Ошибка" },
-    es: { title:"Chain Bank", candles:"🕯️ Velas", charity:"🤝 Caridad", staking:"💎 Staking", dao:"🗳️ DAO", memory:"📖 Libro", back:"← Volver", forGod:"📿 Para Dios", againstGod:"💀 Contra Dios", eternal:"✨ Vela eterna", donate:"🤝 Donar", swap:"🔄 Comprar", stake:"💎 Staking", yourWallet:"Tu wallet", yourName:"Tu nombre", save:"Guardar", txid:"TXID", verify:"Verificar", review:"Reseña", refer:"Recomendar", burned:"Quemado", raised:"Recaudado", goal:"Objetivo", create:"Crear", active:"Activos", myStakes:"Mis stakes", apr:"APR", days:"días", voteFor:"Votar SÍ", voteAgainst:"Votar NO", myVotes:"Mis votos", memoryName:"Nombre", memoryText:"Oración", addMemory:"Agregar", burning:"Quemando...", verified:"¡Verificado!", error:"Error" },
-    zh: { title:"Chain Bank", candles:"🕯️ 蜡烛", charity:"🤝 慈善", staking:"💎 质押", dao:"🗳️ DAO", memory:"📖 记忆", back:"← 返回", forGod:"📿 为了上帝", againstGod:"💀 对抗上帝", eternal:"✨ 永恒蜡烛", donate:"🤝 捐赠", swap:"🔄 购买", stake:"💎 质押", yourWallet:"您的钱包", yourName:"您的名字", save:"保存", txid:"TXID", verify:"验证", review:"评论", refer:"推荐", burned:"销毁", raised:"筹集", goal:"目标", create:"创建", active:"活跃", myStakes:"我的质押", apr:"年化", days:"天", voteFor:"投票支持", voteAgainst:"投票反对", myVotes:"我的投票", memoryName:"姓名", memoryText:"祷告", addMemory:"添加", burning:"销毁中...", verified:"已验证！", error:"错误" },
-    fr: { title:"Chain Bank", candles:"🕯️ Bougies", charity:"🤝 Charité", staking:"💎 Staking", dao:"🗳️ DAO", memory:"📖 Mémoire", back:"← Retour", forGod:"📿 Pour Dieu", againstGod:"💀 Contre Dieu", eternal:"✨ Bougie éternelle", donate:"🤝 Donner", swap:"🔄 Acheter", stake:"💎 Staking", yourWallet:"Votre wallet", yourName:"Votre nom", save:"Sauvegarder", txid:"TXID", verify:"Vérifier", review:"Avis", refer:"Parrainer", burned:"Brûlé", raised:"Collecté", goal:"Objectif", create:"Créer", active:"Actifs", myStakes:"Mes stakes", apr:"APR", days:"jours", voteFor:"Voter POUR", voteAgainst:"Voter CONTRE", myVotes:"Mes votes", memoryName:"Nom", memoryText:"Prière", addMemory:"Ajouter", burning:"Brûlage...", verified:"Vérifié !", error:"Erreur" },
-    de: { title:"Chain Bank", candles:"🕯️ Kerzen", charity:"🤝 Wohltätigkeit", staking:"💎 Staking", dao:"🗳️ DAO", memory:"📖 Gedenken", back:"← Zurück", forGod:"📿 Für Gott", againstGod:"💀 Gegen Gott", eternal:"✨ Ewige Kerze", donate:"🤝 Spenden", swap:"🔄 Kaufen", stake:"💎 Staking", yourWallet:"Ihre Wallet", yourName:"Ihr Name", save:"Speichern", txid:"TXID", verify:"Verifizieren", review:"Bewertung", refer:"Empfehlen", burned:"Verbrannt", raised:"Gesammelt", goal:"Ziel", create:"Erstellen", active:"Aktiv", myStakes:"Meine Stakes", apr:"APY", days:"Tage", voteFor:"Zustimmen", voteAgainst:"Ablehnen", myVotes:"Meine Stimmen", memoryName:"Name", memoryText:"Gebet", addMemory:"Hinzufügen", burning:"Verbrennen...", verified:"Verifiziert!", error:"Fehler" },
-    it: { title:"Chain Bank", candles:"🕯️ Candele", charity:"🤝 Carità", staking:"💎 Staking", dao:"🗳️ DAO", memory:"📖 Memoria", back:"← Indietro", forGod:"📿 Per Dio", againstGod:"💀 Contro Dio", eternal:"✨ Candela eterna", donate:"🤝 Donare", swap:"🔄 Comprare", stake:"💎 Staking", yourWallet:"Il tuo wallet", yourName:"Il tuo nome", save:"Salvare", txid:"TXID", verify:"Verificare", review:"Recensione", refer:"Invita", burned:"Bruciato", raised:"Raccolto", goal:"Obiettivo", create:"Creare", active:"Attivi", myStakes:"I miei stake", apr:"APY", days:"giorni", voteFor:"Votare SÌ", voteAgainst:"Votare NO", myVotes:"I miei voti", memoryName:"Nome", memoryText:"Preghiera", addMemory:"Aggiungi", burning:"Bruciando...", verified:"Verificato!", error:"Errore" },
-    ja: { title:"Chain Bank", candles:"🕯️ キャンドル", charity:"🤝 慈善", staking:"💎 ステーキング", dao:"🗳️ DAO", memory:"📖 追悼", back:"← 戻る", forGod:"📿 神のために", againstGod:"💀 神に逆らう", eternal:"✨ 永遠のキャンドル", donate:"🤝 寄付", swap:"🔄 購入", stake:"💎 ステーキング", yourWallet:"あなたのウォレット", yourName:"あなたの名前", save:"保存", txid:"TXID", verify:"検証", review:"レビュー", refer:"紹介", burned:"バーン", raised:"集まった額", goal:"目標", create:"作成", active:"アクティブ", myStakes:"私のステーク", apr:"APY", days:"日", voteFor:"賛成", voteAgainst:"反対", myVotes:"私の投票", memoryName:"名前", memoryText:"祈り", addMemory:"追加", burning:"バーン中...", verified:"検証済み！", error:"エラー" }
-};
-let currentLang = localStorage.getItem('chainbank_lang') || 'ru';
-function setLanguage(lang) { currentLang = lang; localStorage.setItem('chainbank_lang', lang); document.querySelectorAll('[data-i18n]').forEach(el => { const key = el.getAttribute('data-i18n'); if(translations[lang] && translations[lang][key]) { if(el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') el.placeholder = translations[lang][key]; else el.innerHTML = translations[lang][key]; } }); document.querySelectorAll('.lang-btn').forEach(btn => { if(btn.dataset.lang === lang) btn.classList.add('active'); else btn.classList.remove('active'); }); }
-function renderLangButtons(containerId='lang-switcher') { const container = document.getElementById(containerId); if(!container) return; const langs = { en:'EN', ru:'RU', es:'ES', zh:'中文', fr:'FR', de:'DE', it:'IT', ja:'JP' }; container.innerHTML = ''; Object.entries(langs).forEach(([code, name]) => { const btn = document.createElement('button'); btn.innerText = name; btn.dataset.lang = code; btn.className = `lang-btn ${currentLang === code ? 'active' : ''}`; btn.onclick = () => setLanguage(code); container.appendChild(btn); }); }
-document.addEventListener('DOMContentLoaded', () => { renderLangButtons(); setLanguage(currentLang); });
+// ... предыдущие переводы остаются, плюс добавить в каждый язык:
+// en, ru, es, zh, fr, de, it, ja
+
+// Для каждого языка добавьте эти строки:
+// (пример для русского)
+ru: {
+    ...translations.ru, // старые ключи
+    motto: "In God We Trust",
+    buy_tokens: "Купить токены",
+    wallet_placeholder: "Ваш Solana кошелёк",
+    name_placeholder: "Ваше имя",
+    save: "✙ Сохранить",
+    saved: "Сохранено",
+    copied: "Скопировано!",
+    need_wallet: "Введите кошелёк",
+    need_txid: "Введите TXID",
+    send_vbdc_desc: "Отправьте 1 VBDC на адрес DEUS. Вставьте TXID:",
+    send_deus_desc: "Отправьте 1 DEUS на адрес DIABOLUS. Вставьте TXID:",
+    send_eternal_desc: "Отправьте 1 VBST + 1 VBDC на адрес DEUS. Вставьте TXID:",
+    verify_title: "Подтверждение",
+    txid_placeholder: "Вставьте TXID (хеш транзакции)",
+    verify_btn: "✙ Проверить",
+    donate_direct: "Прямые пожертвования (SOL / USDC)",
+    copy: "📋 Копировать",
+    swap_title: "Купить токены через своп",
+    onramp_title: "Купить SOL/USDC с карты",
+    swift_title: "Крупные пожертвования (SWIFT / SEPA)",
+    swift_desc: "Для пожертвований от $1000. После перевода свяжитесь с нами:",
+    swift_note: "📌 После перевода отправьте подтверждение и ваш кошелёк — мы зачислим токены вручную.",
+    refer_title: "Приведи друга",
+    footer: "Вера, надежда, любовь и блокчейн",
+    against_btn: "💀 Против Бога",
+    eternal_btn: "✨ Вечная свеча",
+    for_btn: "📿 За Бога"
+}
+// Аналогично для остальных языков (en, es, zh, fr, de, it, ja) — переведите ключи.
