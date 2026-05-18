@@ -13,7 +13,6 @@
         .btn-secondary { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); }
         .btn-danger { background: rgba(220,38,38,0.8); }
         .btn-success { background: rgba(34,197,94,0.8); }
-        .status { font-size: 0.7rem; margin-top: 0.5rem; opacity: 0.8; word-break: break-all; }
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(8px); justify-content: center; align-items: center; z-index: 1000; }
         .modal-content { max-width: 500px; width: 90%; background: #0B132B; border-radius: 2rem; padding: 1.5rem; }
         input, textarea { background: rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.2); border-radius: 1rem; padding: 0.5rem 1rem; color: white; width: 100%; }
@@ -30,99 +29,4 @@
     <!-- Поле ввода кошелька -->
     <div class="glass p-5 mb-6">
         <label class="block text-sm mb-2 opacity-80">🔑 Ваш Solana кошелёк (для зачисления/учёта)</label>
-        <input type="text" id="userWallet" placeholder="Например: AXhysCBFq7JAoBxU7osLTj6wq9VjJxESiv5Z759ZfBmZ" class="w-full">
-        <div class="text-xs opacity-60 mt-2">Скопируйте адрес из Phantom и вставьте сюда. Мы запишем ваши действия на этот кошелёк.</div>
-    </div>
-
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-        <div class="glass p-4 text-center"><div class="text-sm opacity-70">📿 За Бога (отправлено VBDC на DEUS)</div><div class="text-2xl font-bold text-green-400" id="forGodCount">1247</div></div>
-        <div class="glass p-4 text-center"><div class="text-sm opacity-70">💀 Против Бога (сожжено DEUS или VBST)</div><div class="text-2xl font-bold text-red-400" id="againstGodCount">42</div></div>
-    </div>
-
-    <!-- Токены -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-        <div class="glass p-5 text-center">
-            <img src="https://raw.githubusercontent.com/byt-assist/catholic-chainbank/refs/heads/main/deus.png" class="w-20 h-20 mx-auto mb-3 rounded-full border-2 border-yellow-500/50">
-            <h2 class="text-xl font-bold">VBDT (DEUS)</h2>
-            <div class="text-2xl font-bold mt-2">$101.82</div>
-            <div class="mt-4 space-y-2">
-                <a href="https://app.meteora.ag/pool/enumCPSnPzkWwm5Xn7MucPBdXcn8DdoYyr1Srwr8KSh" target="_blank" class="btn btn-primary w-full block">💰 Купить</a>
-                <button id="burnDeusReqBtn" class="btn-danger w-full py-2 rounded-full text-sm">💀 Запросить сжигание DEUS (против Бога)</button>
-            </div>
-        </div>
-        <div class="glass p-5 text-center">
-            <img src="https://raw.githubusercontent.com/byt-assist/catholic-chainbank/refs/heads/main/sanctus.png" class="w-20 h-20 mx-auto mb-3 rounded-full border-2 border-blue-500/50">
-            <h2 class="text-xl font-bold">VBST (SANCTUS)</h2>
-            <div class="text-2xl font-bold mt-2">$1.00</div>
-            <div class="mt-4 space-y-2">
-                <a href="https://app.meteora.ag/pool/2adyu61MPcoGz7Jv6PFZTcqeK43k1kbqt32Yxu5i3sSt" target="_blank" class="btn btn-primary w-full block">💰 Купить</a>
-                <button id="burnVbstReqBtn" class="btn-secondary w-full py-2 rounded-full text-sm">🕯️ Запросить сжигание VBST (свеча)</button>
-                <button id="eternalReqBtn" class="btn-success w-full py-2 rounded-full text-sm">✨ Запросить вечную свечу (1 VBST + 1 VBDC)</button>
-            </div>
-        </div>
-        <div class="glass p-5 text-center">
-            <img src="https://raw.githubusercontent.com/byt-assist/catholic-chainbank/refs/heads/main/diabolus.png" class="w-20 h-20 mx-auto mb-3 rounded-full border-2 border-red-500/50">
-            <h2 class="text-xl font-bold">VBDC (DIABOLUS)</h2>
-            <div class="text-2xl font-bold mt-2">$0.99</div>
-            <div class="mt-4 space-y-2">
-                <a href="https://app.meteora.ag/pool/8VBBurpkCtn8jsvUMh95sFgrzVa5pxzKiDd48amykUeA" target="_blank" class="btn btn-primary w-full block">💰 Купить</a>
-                <button id="sendToDeusReqBtn" class="btn-primary w-full py-2 rounded-full text-sm">✝️ Запросить отправку VBDC на DEUS (За Бога)</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Стена искуплённых -->
-    <div class="glass p-6 mb-8">
-        <h3 class="text-xl font-bold mb-3 text-center">📖 Стена искуплённых (отправившие VBDC на DEUS)</h3>
-        <div class="max-h-48 overflow-y-auto space-y-1 font-mono text-xs" id="redeemedList"><div class="text-center opacity-70">Пока никого. Станьте первым!</div></div>
-    </div>
-
-    <!-- Форма заявки (все запросы уходят в Telegram / email) -->
-    <div class="glass p-6">
-        <h3 class="text-xl font-bold mb-3 text-center">📝 Ваши действия</h3>
-        <p class="text-sm text-center opacity-80 mb-4">Нажмите на действие — ваша заявка отправится администратору. После проверки (у вас должны быть токены) мы выполним транзакцию и обновим счётчики.</p>
-        <div id="requestStatus" class="text-center text-sm text-green-400"></div>
-    </div>
-</div>
-
-<!-- Модалки -->
-<div id="whitepaperModal" class="modal"><div class="modal-content"><button class="float-right text-2xl close-modal">&times;</button><h2 class="text-2xl font-bold mb-4">📄 Whitepaper</h2><p><strong>VBDT (DEUS):</strong> Divine token, 10B supply. Burning = against God.</p><p><strong>VBST (SANCTUS):</strong> Charity token, burn for candles.</p><p><strong>VBDC (DIABOLUS):</strong> Send to DEUS address to be redeemed.</p></div></div>
-<div id="whitelistModal" class="modal"><div class="modal-content"><button class="float-right text-2xl close-modal">&times;</button><h2 class="text-2xl font-bold mb-4">✍️ Whitelist</h2><input type="text" id="wlWallet" placeholder="Solana wallet" class="w-full p-2 rounded bg-black/50 border mb-2"><input type="text" id="wlName" placeholder="Your name" class="w-full p-2 rounded bg-black/50 border mb-4"><button id="submitWhitelist" class="btn-primary w-full py-2 rounded-full">Submit</button></div></div>
-
-<script>
-    // Вместо реального подключения — отправка заявки администратору (Telegram / email)
-    // Счётчики и стена искуплённых пока статичные — вы будете их обновлять вручную или через админку.
-
-    function sendRequest(action, details) {
-        const wallet = document.getElementById('userWallet').value.trim();
-        if (!wallet) {
-            alert("Введите ваш Solana кошелёк");
-            return false;
-        }
-        // Здесь вы можете отправить данные на ваш сервер, в Telegram бота или на email
-        // Для демонстрации — показываем сообщение и логируем в консоль
-        const message = `Действие: ${action}\nКошелёк: ${wallet}\nДетали: ${details}\nВремя: ${new Date().toLocaleString()}`;
-        console.log("ЗАЯВКА:", message);
-        alert(`✅ Заявка отправлена администратору!\n\n${message}\n\nПосле проверки токенов мы выполним действие.`);
-        return true;
-    }
-
-    document.getElementById('burnVbstReqBtn').onclick = () => sendRequest("Сжечь VBST (свеча)", "1 VBST будет сожжён с вашего кошелька");
-    document.getElementById('sendToDeusReqBtn').onclick = () => sendRequest("Отправить VBDC на DEUS (За Бога)", "1 VBDC будет отправлен на адрес DEUS");
-    document.getElementById('burnDeusReqBtn').onclick = () => sendRequest("Сжечь DEUS (Против Бога)", "1 DEUS будет сожжён с вашего кошелька");
-    document.getElementById('eternalReqBtn').onclick = () => sendRequest("Вечная свеча", "1 VBST + 1 VBDC будет сожжено/отправлено");
-
-    // Модалки
-    const wpModal = document.getElementById('whitepaperModal'), wlModal = document.getElementById('whitelistModal');
-    document.getElementById('whitepaperBtn').onclick = () => wpModal.style.display = 'flex';
-    document.getElementById('whitelistBtn').onclick = () => wlModal.style.display = 'flex';
-    document.querySelectorAll('.close-modal').forEach(btn => btn.onclick = () => { wpModal.style.display = 'none'; wlModal.style.display = 'none'; });
-    document.getElementById('submitWhitelist').onclick = () => {
-        const wallet = document.getElementById('wlWallet').value.trim();
-        if (!wallet) { alert("Введите кошелёк"); return; }
-        alert(`✅ Заявка на вайтлист для ${wallet} отправлена`);
-        wlModal.style.display = 'none';
-    };
-</script>
-</body>
-</html>
+        <input type="text" id="userWallet" placeholder="Например: AXhysCBFq7JAoBxU7osLTj6wq9VjJ
