@@ -2,24 +2,22 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>Chain Bank · VBDT · VBST · VBDC</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@solana/web3.js@1.95.1/lib/index.iife.min.js"></script>
-    <script src="https://unpkg.com/@solana/spl-token@0.3.11/lib/index.iife.min.js"></script>
     <style>
         body { font-family: 'Inter', sans-serif; background: radial-gradient(circle at 10% 20%, #0B132B, #070C1A); color: white; }
         .glass { background: rgba(255,255,255,0.05); backdrop-filter: blur(16px); border: 1px solid rgba(255,255,255,0.1); border-radius: 2rem; }
         .btn { padding: 0.75rem 1.5rem; border-radius: 2rem; font-weight: 600; transition: all 0.2s; cursor: pointer; }
         .btn-primary { background: linear-gradient(90deg, #C5A059, #FFDF85); color: #0B132B; }
-        .btn-primary:hover { transform: scale(1.02); box-shadow: 0 8px 20px rgba(197,160,89,0.3); }
+        .btn-primary:hover { transform: scale(1.02); }
         .btn-secondary { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); }
         .btn-secondary:hover { background: rgba(255,255,255,0.2); }
-        .btn-danger { background: rgba(220,38,38,0.8); border: none; }
+        .btn-danger { background: rgba(220,38,38,0.8); }
         .btn-danger:hover { background: rgb(220,38,38); }
         .status { font-size: 0.75rem; margin-top: 0.5rem; opacity: 0.8; word-break: break-all; }
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(8px); justify-content: center; align-items: center; z-index: 1000; }
-        .modal-content { max-width: 500px; width: 90%; }
+        .modal-content { max-width: 500px; width: 90%; background: #0B132B; border-radius: 2rem; padding: 1.5rem; }
     </style>
 </head>
 <body class="p-4 md:p-6">
@@ -36,7 +34,7 @@
         </div>
     </div>
 
-    <!-- Wallet connection -->
+    <!-- Wallet connection (universal) -->
     <div class="flex flex-wrap justify-between items-center gap-3 mb-6">
         <button id="connectWalletBtn" class="btn-primary px-4 py-2 rounded-full text-sm font-bold">🦊 Подключить Phantom</button>
         <div id="walletStatus" class="text-xs opacity-60 bg-black/40 px-3 py-1 rounded-full">Не подключён</div>
@@ -44,81 +42,23 @@
 
     <!-- Stats -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-        <div class="glass p-4 text-center">
-            <div class="text-sm opacity-70">📿 За Бога (DIABOLUS на DEUS)</div>
-            <div class="text-2xl font-bold text-green-400" id="forGodCount">1247</div>
-        </div>
-        <div class="glass p-4 text-center">
-            <div class="text-sm opacity-70">💀 Против Бога (сожжено DEUS)</div>
-            <div class="text-2xl font-bold text-red-400" id="againstGodCount">42</div>
-        </div>
+        <div class="glass p-4 text-center"><div class="text-sm opacity-70">📿 За Бога (DIABOLUS на DEUS)</div><div class="text-2xl font-bold text-green-400" id="forGodCount">1247</div></div>
+        <div class="glass p-4 text-center"><div class="text-sm opacity-70">💀 Против Бога (сожжено DEUS)</div><div class="text-2xl font-bold text-red-400" id="againstGodCount">42</div></div>
     </div>
 
     <!-- Tokens -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-        <div class="glass p-5">
-            <img src="https://raw.githubusercontent.com/byt-assist/catholic-chainbank/refs/heads/main/deus.png" class="w-20 h-20 mx-auto mb-3 rounded-full border-2 border-yellow-500/50" alt="DEUS">
-            <h2 class="text-xl font-bold text-center">VBDT (DEUS)</h2>
-            <div class="text-center text-2xl font-bold mt-2">$101.82</div>
-            <div class="mt-4 space-y-2">
-                <a href="https://app.meteora.ag/pool/enumCPSnPzkWwm5Xn7MucPBdXcn8DdoYyr1Srwr8KSh" target="_blank" class="btn btn-primary w-full block text-center">💰 Купить</a>
-                <button id="burnDeusBtn" class="btn-danger w-full py-2 rounded-full text-sm">🔥 Сжечь DEUS (против Бога)</button>
-            </div>
-            <div id="burnDeusStatus" class="status text-center"></div>
-        </div>
-        <div class="glass p-5">
-            <img src="https://raw.githubusercontent.com/byt-assist/catholic-chainbank/refs/heads/main/sanctus.png" class="w-20 h-20 mx-auto mb-3 rounded-full border-2 border-blue-500/50" alt="SANCTUS">
-            <h2 class="text-xl font-bold text-center">VBST (SANCTUS)</h2>
-            <div class="text-center text-2xl font-bold mt-2">$1.00</div>
-            <div class="mt-4 space-y-2">
-                <a href="https://app.meteora.ag/pool/2adyu61MPcoGz7Jv6PFZTcqeK43k1kbqt32Yxu5i3sSt" target="_blank" class="btn btn-primary w-full block text-center">💰 Купить</a>
-                <button id="lightCandleBtn" class="btn-secondary w-full py-2 rounded-full text-sm">🕯️ Свеча (1 VBST)</button>
-                <button id="lightEternalCandleBtn" class="btn-secondary w-full py-2 rounded-full text-sm">🕯️✨ Вечная свеча (1 VBST+1 VBDC)</button>
-            </div>
-            <div id="burnSanctusStatus" class="status text-center"></div>
-        </div>
-        <div class="glass p-5">
-            <img src="https://raw.githubusercontent.com/byt-assist/catholic-chainbank/refs/heads/main/diabolus.png" class="w-20 h-20 mx-auto mb-3 rounded-full border-2 border-red-500/50" alt="DIABOLUS">
-            <h2 class="text-xl font-bold text-center">VBDC (DIABOLUS)</h2>
-            <div class="text-center text-2xl font-bold mt-2">$0.99</div>
-            <div class="mt-4 space-y-2">
-                <a href="https://app.meteora.ag/pool/8VBBurpkCtn8jsvUMh95sFgrzVa5pxzKiDd48amykUeA" target="_blank" class="btn btn-primary w-full block text-center">💰 Купить</a>
-                <button id="sendToGodBtn" class="btn-primary w-full py-2 rounded-full text-sm">✝️ Отправить DIABOLUS на DEUS</button>
-            </div>
-            <div id="sendToGodStatus" class="status text-center"></div>
-        </div>
+        <div class="glass p-5"><img src="https://raw.githubusercontent.com/byt-assist/catholic-chainbank/refs/heads/main/deus.png" class="w-20 h-20 mx-auto mb-3 rounded-full border-2 border-yellow-500/50"><h2 class="text-xl font-bold text-center">VBDT (DEUS)</h2><div class="text-center text-2xl font-bold mt-2">$101.82</div><div class="mt-4 space-y-2"><a href="https://app.meteora.ag/pool/enumCPSnPzkWwm5Xn7MucPBdXcn8DdoYyr1Srwr8KSh" target="_blank" class="btn btn-primary w-full block text-center">💰 Купить</a><button id="burnDeusBtn" class="btn-danger w-full py-2 rounded-full text-sm">🔥 Сжечь DEUS (против Бога)</button></div><div id="burnDeusStatus" class="status text-center"></div></div>
+        <div class="glass p-5"><img src="https://raw.githubusercontent.com/byt-assist/catholic-chainbank/refs/heads/main/sanctus.png" class="w-20 h-20 mx-auto mb-3 rounded-full border-2 border-blue-500/50"><h2 class="text-xl font-bold text-center">VBST (SANCTUS)</h2><div class="text-center text-2xl font-bold mt-2">$1.00</div><div class="mt-4 space-y-2"><a href="https://app.meteora.ag/pool/2adyu61MPcoGz7Jv6PFZTcqeK43k1kbqt32Yxu5i3sSt" target="_blank" class="btn btn-primary w-full block text-center">💰 Купить</a><button id="lightCandleBtn" class="btn-secondary w-full py-2 rounded-full text-sm">🕯️ Свеча (1 VBST)</button><button id="lightEternalCandleBtn" class="btn-secondary w-full py-2 rounded-full text-sm">🕯️✨ Вечная свеча (1 VBST+1 VBDC)</button></div><div id="burnSanctusStatus" class="status text-center"></div></div>
+        <div class="glass p-5"><img src="https://raw.githubusercontent.com/byt-assist/catholic-chainbank/refs/heads/main/diabolus.png" class="w-20 h-20 mx-auto mb-3 rounded-full border-2 border-red-500/50"><h2 class="text-xl font-bold text-center">VBDC (DIABOLUS)</h2><div class="text-center text-2xl font-bold mt-2">$0.99</div><div class="mt-4 space-y-2"><a href="https://app.meteora.ag/pool/8VBBurpkCtn8jsvUMh95sFgrzVa5pxzKiDd48amykUeA" target="_blank" class="btn btn-primary w-full block text-center">💰 Купить</a><button id="sendToGodBtn" class="btn-primary w-full py-2 rounded-full text-sm">✝️ Отправить DIABOLUS на DEUS</button></div><div id="sendToGodStatus" class="status text-center"></div></div>
     </div>
 
-    <!-- Wall -->
-    <div class="glass p-6 mb-8">
-        <h3 class="text-xl font-bold mb-3 text-center">📖 Стена искуплённых</h3>
-        <div class="max-h-48 overflow-y-auto space-y-1 font-mono text-xs" id="redeemedList">
-            <div class="text-center opacity-70">Пока никого. Станьте первым!</div>
-        </div>
-    </div>
-
-    <!-- Whitepaper Modal -->
-    <div id="whitepaperModal" class="modal">
-        <div class="modal-content glass p-6 relative">
-            <button class="absolute top-3 right-3 text-white text-2xl close-modal">&times;</button>
-            <h2 class="text-2xl font-bold mb-4">📄 Whitepaper</h2>
-            <p><strong>VBDT (DEUS):</strong> Divine token, 10B supply. Burning = against God.</p>
-            <p><strong>VBST (SANCTUS):</strong> Charity token, burn for candles.</p>
-            <p><strong>VBDC (DIABOLUS):</strong> Send to DEUS address to be redeemed.</p>
-        </div>
-    </div>
-
-    <!-- Whitelist Modal -->
-    <div id="whitelistModal" class="modal">
-        <div class="modal-content glass p-6 relative">
-            <button class="absolute top-3 right-3 text-white text-2xl close-modal">&times;</button>
-            <h2 class="text-2xl font-bold mb-4">✍️ Whitelist</h2>
-            <input type="text" id="wlWallet" placeholder="Solana wallet" class="w-full p-2 rounded bg-black/50 border mb-2">
-            <input type="text" id="wlName" placeholder="Your name" class="w-full p-2 rounded bg-black/50 border mb-4">
-            <button id="submitWhitelist" class="btn-primary w-full py-2 rounded-full">Submit</button>
-        </div>
-    </div>
+    <div class="glass p-6 mb-8"><h3 class="text-xl font-bold mb-3 text-center">📖 Стена искуплённых</h3><div class="max-h-48 overflow-y-auto space-y-1 font-mono text-xs" id="redeemedList"><div class="text-center opacity-70">Пока никого. Станьте первым!</div></div></div>
 </div>
+
+<!-- Modals -->
+<div id="whitepaperModal" class="modal"><div class="modal-content"><button class="float-right text-2xl close-modal">&times;</button><h2 class="text-2xl font-bold mb-4">📄 Whitepaper</h2><p><strong>VBDT (DEUS):</strong> Divine token, 10B supply. Burning = against God.</p><p><strong>VBST (SANCTUS):</strong> Charity token, burn for candles.</p><p><strong>VBDC (DIABOLUS):</strong> Send to DEUS address to be redeemed.</p></div></div>
+<div id="whitelistModal" class="modal"><div class="modal-content"><button class="float-right text-2xl close-modal">&times;</button><h2 class="text-2xl font-bold mb-4">✍️ Whitelist</h2><input type="text" id="wlWallet" placeholder="Solana wallet" class="w-full p-2 rounded bg-black/50 border mb-2"><input type="text" id="wlName" placeholder="Your name" class="w-full p-2 rounded bg-black/50 border mb-4"><button id="submitWhitelist" class="btn-primary w-full py-2 rounded-full">Submit</button></div></div>
 
 <script>
     // ----- Токены -----
@@ -130,28 +70,62 @@
     const DEUS_ADDRESS = TOKENS.VBDT;
     let connection = null;
     let wallet = null;
+    let isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
-    // ---- Подключение кошелька (исправленное) ----
+    // ----- Подключение через деплинк (Android) или расширение -----
     async function connectWallet() {
-        if (!window.solana) {
-            alert("❌ Phantom не установлен. Установите из chrome web store.");
+        if (isMobile) {
+            // Для мобильных — открываем Phantom через deeplink
+            const deepLink = `phantom://browse?url=${encodeURIComponent(window.location.href)}`;
+            window.location.href = deepLink;
+            setTimeout(() => {
+                if (!wallet) alert("❌ Установите Phantom из Google Play или откройте сайт в браузере Phantom");
+            }, 2000);
             return false;
-        }
-        try {
-            // Принудительно запрашиваем подключение
-            const resp = await window.solana.connect();
-            wallet = resp.publicKey.toString();
-            document.getElementById('walletStatus').innerHTML = `✅ ${wallet.slice(0,4)}...${wallet.slice(-4)}`;
-            connection = new solanaWeb3.Connection(solanaWeb3.clusterApiUrl('mainnet-beta'));
-            return true;
-        } catch (err) {
-            console.error(err);
-            alert("❌ Ошибка подключения: " + err.message);
-            return false;
+        } else {
+            // Для компьютера — через расширение
+            if (!window.solana) {
+                alert("❌ Установите расширение Phantom: https://phantom.app");
+                return false;
+            }
+            try {
+                const resp = await window.solana.connect();
+                wallet = resp.publicKey.toString();
+                document.getElementById('walletStatus').innerHTML = `✅ ${wallet.slice(0,4)}...${wallet.slice(-4)}`;
+                connection = new solanaWeb3.Connection("https://api.mainnet-beta.solana.com");
+                return true;
+            } catch (err) {
+                alert("❌ Ошибка: " + err.message);
+                return false;
+            }
         }
     }
 
-    // ---- Общая отправка транзакции ----
+    // ---- Функции для создания ссылок на транзакции (на мобильных - через деплинк) ----
+    function getSolanaWeb3() {
+        if (!window.solanaWeb3 && typeof solanaWeb3 !== 'undefined') return solanaWeb3;
+        return window.solanaWeb3;
+    }
+
+    async function buildTransferVbdcToDeusTx(walletAddr) {
+        const { PublicKey, Transaction, SystemProgram } = getSolanaWeb3();
+        const toPubkey = new PublicKey(DEUS_ADDRESS);
+        const fromPubkey = new PublicKey(walletAddr);
+        // Здесь нужно получить ata, но для деплинка упростим: просто перевод
+        const tx = new Transaction().add(
+            SystemProgram.transfer({
+                fromPubkey: fromPubkey,
+                toPubkey: toPubkey,
+                lamports: 1000000 // 0.001 SOL, для демо
+            })
+        );
+        const { blockhash } = await connection.getLatestBlockhash();
+        tx.recentBlockhash = blockhash;
+        tx.feePayer = fromPubkey;
+        return tx;
+    }
+
+    // ---- Кнопки (для компьютера) ----
     async function sendTransaction(instruction) {
         if (!wallet || !connection) throw new Error("Кошелёк не подключён");
         const tx = new solanaWeb3.Transaction().add(instruction);
@@ -164,94 +138,95 @@
         return sig;
     }
 
-    // ---- Сжечь VBST (обычная свеча) ----
-    document.getElementById('lightCandleBtn').onclick = async () => {
-        const statusDiv = document.getElementById('burnSanctusStatus');
-        if (!wallet) { alert("Сначала подключите кошелёк"); return; }
-        statusDiv.innerText = "⏳ Сжигаем...";
-        try {
-            const accounts = await connection.getTokenAccountsByOwner(new solanaWeb3.PublicKey(wallet), { mint: new solanaWeb3.PublicKey(TOKENS.VBST) });
-            if (accounts.value.length === 0) throw new Error("Нет VBST");
-            const ata = accounts.value[0].pubkey;
-            const ix = splToken.createBurnInstruction(ata, new solanaWeb3.PublicKey(TOKENS.VBST), new solanaWeb3.PublicKey(wallet), 1e9, [], splToken.TOKEN_2022_PROGRAM_ID);
-            const sig = await sendTransaction(ix);
-            statusDiv.innerText = `✅ Сожжён 1 VBST! ${sig.slice(0,16)}...`;
-            document.getElementById('againstGodCount').innerText = parseInt(document.getElementById('againstGodCount').innerText) + 1;
-        } catch(e) { statusDiv.innerText = `❌ ${e.message}`; }
-    };
+    if (!isMobile) {
+        // Инициализация web3 для компьютера
+        window.solanaWeb3 = solanaWeb3;
+        connection = new solanaWeb3.Connection("https://api.mainnet-beta.solana.com");
 
-    // ---- Отправить VBDC на DEUS ----
-    document.getElementById('sendToGodBtn').onclick = async () => {
-        const statusDiv = document.getElementById('sendToGodStatus');
-        if (!wallet) { alert("Сначала подключите кошелёк"); return; }
-        statusDiv.innerText = "⏳ Отправляем...";
-        try {
-            const fromAccounts = await connection.getTokenAccountsByOwner(new solanaWeb3.PublicKey(wallet), { mint: new solanaWeb3.PublicKey(TOKENS.VBDC) });
-            if (fromAccounts.value.length === 0) throw new Error("Нет VBDC");
-            const fromAta = fromAccounts.value[0].pubkey;
-            const toAta = await splToken.getOrCreateAssociatedTokenAccount(connection, window.solana, new solanaWeb3.PublicKey(TOKENS.VBDC), new solanaWeb3.PublicKey(DEUS_ADDRESS), true, "confirmed", {}, splToken.TOKEN_2022_PROGRAM_ID);
-            const ix = splToken.createTransferInstruction(fromAta, toAta.address, new solanaWeb3.PublicKey(wallet), 1e9, [], splToken.TOKEN_2022_PROGRAM_ID);
-            const sig = await sendTransaction(ix);
-            statusDiv.innerText = `✅ Отправлен 1 VBDC на DEUS! ${sig.slice(0,16)}...`;
-            let forGod = parseInt(document.getElementById('forGodCount').innerText) + 1;
-            document.getElementById('forGodCount').innerText = forGod;
-            const listDiv = document.getElementById('redeemedList');
-            if (listDiv.innerHTML.includes("Пока никого")) listDiv.innerHTML = "";
-            listDiv.innerHTML += `<div class="text-center opacity-80">✝️ ${wallet.slice(0,6)}...${wallet.slice(-4)} (искуплён)</div>`;
-        } catch(e) { statusDiv.innerText = `❌ ${e.message}`; }
-    };
-
-    // ---- Сжечь DEUS ----
-    document.getElementById('burnDeusBtn').onclick = async () => {
-        const statusDiv = document.getElementById('burnDeusStatus');
-        if (!wallet) { alert("Сначала подключите кошелёк"); return; }
-        statusDiv.innerText = "⏳ Сжигаем DEUS...";
-        try {
-            const accounts = await connection.getTokenAccountsByOwner(new solanaWeb3.PublicKey(wallet), { mint: new solanaWeb3.PublicKey(TOKENS.VBDT) });
-            if (accounts.value.length === 0) throw new Error("Нет DEUS");
-            const ata = accounts.value[0].pubkey;
-            const ix = splToken.createBurnInstruction(ata, new solanaWeb3.PublicKey(TOKENS.VBDT), new solanaWeb3.PublicKey(wallet), 1e9, [], splToken.TOKEN_2022_PROGRAM_ID);
-            const sig = await sendTransaction(ix);
-            statusDiv.innerText = `✅ Сожжён 1 DEUS (против Бога)! ${sig.slice(0,16)}...`;
-            let against = parseInt(document.getElementById('againstGodCount').innerText) + 1;
-            document.getElementById('againstGodCount').innerText = against;
-        } catch(e) { statusDiv.innerText = `❌ ${e.message}`; }
-    };
-
-    // ---- Вечная свеча (VBST burn + VBDC send to Deus) ----
-    document.getElementById('lightEternalCandleBtn').onclick = async () => {
-        const statusDiv = document.getElementById('burnSanctusStatus');
-        if (!wallet) { alert("Сначала подключите кошелёк"); return; }
-        statusDiv.innerText = "⏳ Зажигаем вечную свечу...";
-        try {
-            const vbstAccounts = await connection.getTokenAccountsByOwner(new solanaWeb3.PublicKey(wallet), { mint: new solanaWeb3.PublicKey(TOKENS.VBST) });
-            const vbdcAccounts = await connection.getTokenAccountsByOwner(new solanaWeb3.PublicKey(wallet), { mint: new solanaWeb3.PublicKey(TOKENS.VBDC) });
-            if (vbstAccounts.value.length === 0 || vbdcAccounts.value.length === 0) throw new Error("Нужен 1 VBST и 1 VBDC");
-            const ataVbst = vbstAccounts.value[0].pubkey;
-            const ataVbdc = vbdcAccounts.value[0].pubkey;
-            const burnIx = splToken.createBurnInstruction(ataVbst, new solanaWeb3.PublicKey(TOKENS.VBST), new solanaWeb3.PublicKey(wallet), 1e9, [], splToken.TOKEN_2022_PROGRAM_ID);
-            const toAta = await splToken.getOrCreateAssociatedTokenAccount(connection, window.solana, new solanaWeb3.PublicKey(TOKENS.VBDC), new solanaWeb3.PublicKey(DEUS_ADDRESS), true, "confirmed", {}, splToken.TOKEN_2022_PROGRAM_ID);
-            const transferIx = splToken.createTransferInstruction(ataVbdc, toAta.address, new solanaWeb3.PublicKey(wallet), 1e9, [], splToken.TOKEN_2022_PROGRAM_ID);
-            const tx = new solanaWeb3.Transaction().add(burnIx, transferIx);
-            const { blockhash } = await connection.getLatestBlockhash();
-            tx.recentBlockhash = blockhash;
-            tx.feePayer = new solanaWeb3.PublicKey(wallet);
-            const signed = await window.solana.signTransaction(tx);
-            const sig = await connection.sendRawTransaction(signed.serialize());
-            await connection.confirmTransaction(sig);
-            statusDiv.innerText = `✅ Вечная свеча зажжена! ${sig.slice(0,16)}...`;
-            let forGod = parseInt(document.getElementById('forGodCount').innerText) + 1;
-            document.getElementById('forGodCount').innerText = forGod;
-            const listDiv = document.getElementById('redeemedList');
-            if (listDiv.innerHTML.includes("Пока никого")) listDiv.innerHTML = "";
-            listDiv.innerHTML += `<div class="text-center opacity-80">✨ ${wallet.slice(0,6)}...${wallet.slice(-4)} (вечная свеча)</div>`;
-        } catch(e) { statusDiv.innerText = `❌ ${e.message}`; }
-    };
+        document.getElementById('lightCandleBtn').onclick = async () => {
+            if (!wallet) { alert("Сначала подключите кошелёк"); return; }
+            const statusDiv = document.getElementById('burnSanctusStatus');
+            statusDiv.innerText = "⏳ Сжигаем...";
+            try {
+                const accounts = await connection.getTokenAccountsByOwner(new solanaWeb3.PublicKey(wallet), { mint: new solanaWeb3.PublicKey(TOKENS.VBST) });
+                if (accounts.value.length === 0) throw new Error("Нет VBST");
+                const ata = accounts.value[0].pubkey;
+                const ix = splToken.createBurnInstruction(ata, new solanaWeb3.PublicKey(TOKENS.VBST), new solanaWeb3.PublicKey(wallet), 1e9, [], splToken.TOKEN_2022_PROGRAM_ID);
+                const sig = await sendTransaction(ix);
+                statusDiv.innerText = `✅ Сожжён 1 VBST! ${sig.slice(0,16)}...`;
+            } catch(e) { statusDiv.innerText = `❌ ${e.message}`; }
+        };
+        document.getElementById('sendToGodBtn').onclick = async () => {
+            if (!wallet) { alert("Сначала подключите кошелёк"); return; }
+            const statusDiv = document.getElementById('sendToGodStatus');
+            statusDiv.innerText = "⏳ Отправляем...";
+            try {
+                const fromAccounts = await connection.getTokenAccountsByOwner(new solanaWeb3.PublicKey(wallet), { mint: new solanaWeb3.PublicKey(TOKENS.VBDC) });
+                if (fromAccounts.value.length === 0) throw new Error("Нет VBDC");
+                const fromAta = fromAccounts.value[0].pubkey;
+                const toAta = await splToken.getOrCreateAssociatedTokenAccount(connection, window.solana, new solanaWeb3.PublicKey(TOKENS.VBDC), new solanaWeb3.PublicKey(DEUS_ADDRESS), true, "confirmed", {}, splToken.TOKEN_2022_PROGRAM_ID);
+                const ix = splToken.createTransferInstruction(fromAta, toAta.address, new solanaWeb3.PublicKey(wallet), 1e9, [], splToken.TOKEN_2022_PROGRAM_ID);
+                const sig = await sendTransaction(ix);
+                statusDiv.innerText = `✅ Отправлен 1 VBDC на DEUS! ${sig.slice(0,16)}...`;
+                let forGod = parseInt(document.getElementById('forGodCount').innerText) + 1;
+                document.getElementById('forGodCount').innerText = forGod;
+                const listDiv = document.getElementById('redeemedList');
+                if (listDiv.innerHTML.includes("Пока никого")) listDiv.innerHTML = "";
+                listDiv.innerHTML += `<div class="text-center opacity-80">✝️ ${wallet.slice(0,6)}...${wallet.slice(-4)} (искуплён)</div>`;
+            } catch(e) { statusDiv.innerText = `❌ ${e.message}`; }
+        };
+        document.getElementById('burnDeusBtn').onclick = async () => {
+            if (!wallet) { alert("Сначала подключите кошелёк"); return; }
+            const statusDiv = document.getElementById('burnDeusStatus');
+            statusDiv.innerText = "⏳ Сжигаем DEUS...";
+            try {
+                const accounts = await connection.getTokenAccountsByOwner(new solanaWeb3.PublicKey(wallet), { mint: new solanaWeb3.PublicKey(TOKENS.VBDT) });
+                if (accounts.value.length === 0) throw new Error("Нет DEUS");
+                const ata = accounts.value[0].pubkey;
+                const ix = splToken.createBurnInstruction(ata, new solanaWeb3.PublicKey(TOKENS.VBDT), new solanaWeb3.PublicKey(wallet), 1e9, [], splToken.TOKEN_2022_PROGRAM_ID);
+                const sig = await sendTransaction(ix);
+                statusDiv.innerText = `✅ Сожжён 1 DEUS (против Бога)! ${sig.slice(0,16)}...`;
+            } catch(e) { statusDiv.innerText = `❌ ${e.message}`; }
+        };
+        document.getElementById('lightEternalCandleBtn').onclick = async () => {
+            if (!wallet) { alert("Сначала подключите кошелёк"); return; }
+            const statusDiv = document.getElementById('burnSanctusStatus');
+            statusDiv.innerText = "⏳ Зажигаем вечную свечу...";
+            try {
+                const vbstAccounts = await connection.getTokenAccountsByOwner(new solanaWeb3.PublicKey(wallet), { mint: new solanaWeb3.PublicKey(TOKENS.VBST) });
+                const vbdcAccounts = await connection.getTokenAccountsByOwner(new solanaWeb3.PublicKey(wallet), { mint: new solanaWeb3.PublicKey(TOKENS.VBDC) });
+                if (vbstAccounts.value.length === 0 || vbdcAccounts.value.length === 0) throw new Error("Нужен 1 VBST и 1 VBDC");
+                const ataVbst = vbstAccounts.value[0].pubkey;
+                const ataVbdc = vbdcAccounts.value[0].pubkey;
+                const burnIx = splToken.createBurnInstruction(ataVbst, new solanaWeb3.PublicKey(TOKENS.VBST), new solanaWeb3.PublicKey(wallet), 1e9, [], splToken.TOKEN_2022_PROGRAM_ID);
+                const toAta = await splToken.getOrCreateAssociatedTokenAccount(connection, window.solana, new solanaWeb3.PublicKey(TOKENS.VBDC), new solanaWeb3.PublicKey(DEUS_ADDRESS), true, "confirmed", {}, splToken.TOKEN_2022_PROGRAM_ID);
+                const transferIx = splToken.createTransferInstruction(ataVbdc, toAta.address, new solanaWeb3.PublicKey(wallet), 1e9, [], splToken.TOKEN_2022_PROGRAM_ID);
+                const tx = new solanaWeb3.Transaction().add(burnIx, transferIx);
+                const { blockhash } = await connection.getLatestBlockhash();
+                tx.recentBlockhash = blockhash;
+                tx.feePayer = new solanaWeb3.PublicKey(wallet);
+                const signed = await window.solana.signTransaction(tx);
+                const sig = await connection.sendRawTransaction(signed.serialize());
+                await connection.confirmTransaction(sig);
+                statusDiv.innerText = `✅ Вечная свеча зажжена! ${sig.slice(0,16)}...`;
+                let forGod = parseInt(document.getElementById('forGodCount').innerText) + 1;
+                document.getElementById('forGodCount').innerText = forGod;
+                const listDiv = document.getElementById('redeemedList');
+                if (listDiv.innerHTML.includes("Пока никого")) listDiv.innerHTML = "";
+                listDiv.innerHTML += `<div class="text-center opacity-80">✨ ${wallet.slice(0,6)}...${wallet.slice(-4)} (вечная свеча)</div>`;
+            } catch(e) { statusDiv.innerText = `❌ ${e.message}`; }
+        };
+    } else {
+        // На мобильных — кнопки показывают сообщение
+        const btns = ['lightCandleBtn', 'sendToGodBtn', 'burnDeusBtn', 'lightEternalCandleBtn'];
+        btns.forEach(id => {
+            const btn = document.getElementById(id);
+            if (btn) btn.onclick = () => alert("📱 На мобильном сначала подключитесь через кнопку «Подключить Phantom», затем используйте сайт в браузере Phantom");
+        });
+    }
 
     // ---- Кнопка подключения ----
-    document.getElementById('connectWalletBtn').onclick = async () => {
-        await connectWallet();
-    };
+    document.getElementById('connectWalletBtn').onclick = connectWallet;
 
     // ---- Модалки ----
     const wpModal = document.getElementById('whitepaperModal');
@@ -261,8 +236,9 @@
     document.querySelectorAll('.close-modal').forEach(btn => btn.onclick = () => { wpModal.style.display = 'none'; wlModal.style.display = 'none'; });
     document.getElementById('submitWhitelist').onclick = () => { alert("Заявка отправлена (демо)"); wlModal.style.display = 'none'; };
 
-    // Инициализация (connection без кошелька)
-    connection = new solanaWeb3.Connection(solanaWeb3.clusterApiUrl('mainnet-beta'));
+    if (!isMobile && !window.solana) {
+        document.getElementById('walletStatus').innerHTML = "🦊 Установите Phantom";
+    }
 </script>
 </body>
 </html>
