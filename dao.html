@@ -1,38 +1,12 @@
 <!DOCTYPE html>
 <html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DAO · Chain Bank</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>body{background:radial-gradient(circle at 10%20%,#0B132B,#070C1A);color:white;}.glass{background:rgba(255,255,255,0.05);backdrop-filter:blur(16px);border-radius:2rem;padding:1.5rem;margin-bottom:1.5rem;}.btn{padding:0.7rem 1.2rem;border-radius:2rem;font-weight:600;cursor:pointer;background:rgba(255,255,255,0.1);}.btn-primary{background:linear-gradient(90deg,#C5A059,#FFDF85);color:#0B132B;}</style>
-</head>
-<body class="p-4">
-<div class="max-w-3xl mx-auto">
-    <div class="flex justify-between items-center mb-6"><h1 class="text-3xl font-bold">🗳️ DAO голосования</h1><a href="index.html" class="btn">← На главную</a></div>
-    <div class="glass"><h2 class="text-xl font-bold mb-3">Ваш кошелёк (для голосования)</h2><input type="text" id="daoWallet" placeholder="Ваш Solana кошелёк" class="w-full p-2 rounded bg-black/50 border mb-2"><button id="checkVotesBtn" class="btn-primary w-full py-2 rounded-full">Проверить мои голоса</button></div>
-    <div class="glass"><h2 class="text-xl font-bold mb-3">📋 Активные голосования</h2><div id="proposalsList"></div></div>
-    <div class="glass"><h2 class="text-xl font-bold mb-3">🗳️ Мои голоса</h2><div id="myVotes"></div></div>
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Chain Bank - DAO</title><script src="https://cdn.tailwindcss.com"></script><script src="lang.js"></script><link href="style.css" rel="stylesheet"></head>
+<body class="p-4"><div class="max-w-3xl mx-auto">
+<div class="flex flex-wrap justify-between items-center gap-3 mb-6 pb-3 border-b border-gold/30"><h1 class="text-3xl font-bold" style="font-family:'Cormorant Garamond',serif; color:#FFDF85;" data-i18n="dao">DAO голосования</h1><div class="flex gap-2"><div id="lang-switcher" class="flex gap-1"></div><a href="index.html" class="btn-secondary px-4 py-2 rounded-full text-sm" data-i18n="back">← На главную</a></div></div>
+<div class="glass p-6 mb-6"><h2 class="text-xl font-bold mb-3" data-i18n="yourWallet">Ваш кошелёк (для голосования)</h2><input type="text" id="daoWallet" class="w-full p-2 rounded bg-black/50 border border-gold/30 mb-2" data-i18n-placeholder="wallet_placeholder"><button id="checkVotesBtn" class="btn-primary w-full py-2 rounded-full" data-i18n="myVotes">Проверить мои голоса</button></div>
+<div class="glass p-6 mb-6"><h2 class="text-xl font-bold mb-3" data-i18n="active">📋 Активные голосования</h2><div id="proposalsList"></div></div>
+<div class="glass p-6"><h2 class="text-xl font-bold mb-3" data-i18n="myVotes">🗳️ Мои голоса</h2><div id="myVotes"></div></div>
 </div>
-<script>
-    let proposals = JSON.parse(localStorage.getItem('proposals') || '[{"id":1,"title":"Направить 10% казны на помощь детскому дому","votesFor":125,"votesAgainst":30},{"id":2,"title":"Добавить новый токен BLESS","votesFor":200,"votesAgainst":45}]');
-    let userVotes = JSON.parse(localStorage.getItem('userVotes') || '[]');
-    function renderProposals() {
-        let wallet=document.getElementById('daoWallet').value;
-        let container=document.getElementById('proposalsList');
-        if(proposals.length===0){container.innerHTML='<div class="opacity-60">Нет активных голосований</div>';return;}
-        container.innerHTML=proposals.map(p=>`<div class="mb-3 p-3 rounded bg-black/30"><div class="font-bold">${p.title}</div><div>✅ За: ${p.votesFor} | ❌ Против: ${p.votesAgainst}</div><button class="voteForBtn btn-primary px-3 py-1 text-sm rounded-full mt-1" data-id="${p.id}" data-vote="for">Голосовать ЗА</button> <button class="voteAgainstBtn btn-danger px-3 py-1 text-sm rounded-full mt-1" data-id="${p.id}" data-vote="against" style="background:#b91c1c;">Голосовать ПРОТИВ</button></div>`).join('');
-        document.querySelectorAll('.voteForBtn, .voteAgainstBtn').forEach(btn=>btn.onclick=()=>{let id=Number(btn.dataset.id);let voteType=btn.dataset.vote;let wallet=document.getElementById('daoWallet').value;if(!wallet){alert('Введите кошелёк');return;}if(userVotes.some(v=>v.wallet===wallet && v.proposalId===id)){alert('Вы уже голосовали');return;}let prop=proposals.find(p=>p.id===id);if(voteType==='for')prop.votesFor+=1;else prop.votesAgainst+=1;userVotes.push({wallet,proposalId:id,vote:voteType});localStorage.setItem('proposals',JSON.stringify(proposals));localStorage.setItem('userVotes',JSON.stringify(userVotes));renderProposals();renderMyVotes();alert('Голос учтён');});
-    }
-    function renderMyVotes() {
-        let wallet=document.getElementById('daoWallet').value;
-        if(!wallet){document.getElementById('myVotes').innerHTML='<div class="opacity-60">Введите кошелёк</div>';return;}
-        let my=userVotes.filter(v=>v.wallet===wallet);
-        if(my.length===0){document.getElementById('myVotes').innerHTML='<div class="opacity-60">Вы ещё не голосовали</div>';return;}
-        document.getElementById('myVotes').innerHTML=my.map(v=>`<div class="mb-1">Предложение #${v.proposalId}: ${v.vote==='for'?'✅ ЗА':'❌ ПРОТИВ'}</div>`).join('');
-    }
-    document.getElementById('checkVotesBtn').onclick=renderMyVotes;
-    renderProposals(); renderMyVotes();
-</script>
-</body>
-</html>
+<script>let proposals=JSON.parse(localStorage.getItem('proposals')||'[{"id":1,"title":"Направить 10% казны на помощь детскому дому","votesFor":125,"votesAgainst":30},{"id":2,"title":"Добавить новый токен BLESS","votesFor":200,"votesAgainst":45}]');let userVotes=JSON.parse(localStorage.getItem('userVotes')||'[]');function renderProposals(){let wallet=document.getElementById('daoWallet').value;let container=document.getElementById('proposalsList');if(proposals.length===0){container.innerHTML='<div class="opacity-60 text-center" data-i18n="no_proposals">Нет активных голосований</div>';return;}container.innerHTML=proposals.map(p=>`<div class="mb-3 p-3 rounded bg-black/30 border border-gold/30"><div class="font-bold">${p.title}</div><div>✅ ${p.votesFor} | ❌ ${p.votesAgainst}</div><button class="voteForBtn btn-primary px-3 py-1 text-sm rounded-full mt-1" data-id="${p.id}" data-i18n="voteFor">Голосовать ЗА</button> <button class="voteAgainstBtn btn-danger px-3 py-1 text-sm rounded-full mt-1" data-id="${p.id}" data-i18n="voteAgainst" style="background:#b91c1c;">Голосовать ПРОТИВ</button></div>`).join('');document.querySelectorAll('.voteForBtn,.voteAgainstBtn').forEach(btn=>btn.onclick=()=>{let id=Number(btn.dataset.id);let voteType=btn.classList.contains('voteForBtn')?'for':'against';let wallet=document.getElementById('daoWallet').value;if(!wallet){alert(translations[currentLang]?.need_wallet||'Введите кошелёк');return;}if(userVotes.some(v=>v.wallet===wallet&&v.proposalId===id)){alert(translations[currentLang]?.already_voted||'Вы уже голосовали');return;}let prop=proposals.find(p=>p.id===id);if(voteType==='for')prop.votesFor+=1;else prop.votesAgainst+=1;userVotes.push({wallet,proposalId:id,vote:voteType});localStorage.setItem('proposals',JSON.stringify(proposals));localStorage.setItem('userVotes',JSON.stringify(userVotes));renderProposals();renderMyVotes();alert(translations[currentLang]?.saved||'Голос учтён');});}
+function renderMyVotes(){let wallet=document.getElementById('daoWallet').value;if(!wallet){document.getElementById('myVotes').innerHTML='<div class="opacity-60 text-center" data-i18n="enter_wallet">Введите кошелёк</div>';return;}let my=userVotes.filter(v=>v.wallet===wallet);if(my.length===0){document.getElementById('myVotes').innerHTML='<div class="opacity-60 text-center" data-i18n="no_votes">Вы ещё не голосовали</div>';return;}document.getElementById('myVotes').innerHTML=my.map(v=>`<div class="mb-1">Предложение #${v.proposalId}: ${v.vote==='for'?'✅ ЗА':'❌ ПРОТИВ'}</div>`).join('');}
+document.getElementById('checkVotesBtn').onclick=renderMyVotes;renderProposals();renderMyVotes();</script></body></html>
