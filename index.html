@@ -12,10 +12,10 @@
         .btn-primary { background: linear-gradient(90deg, #C5A059, #FFDF85); color: #0B132B; }
         .btn-secondary { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); }
         .btn-danger { background: rgba(220,38,38,0.8); }
-        .btn-success { background: rgba(34,197,94,0.8); }
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(8px); justify-content: center; align-items: center; z-index: 1000; }
         .modal-content { max-width: 500px; width: 90%; background: #0B132B; border-radius: 2rem; padding: 1.5rem; }
-        input, textarea { background: rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.2); border-radius: 1rem; padding: 0.5rem 1rem; color: white; width: 100%; }
+        .address-box { background: #00000066; padding: 0.5rem; border-radius: 1rem; font-family: monospace; word-break: break-all; font-size: 0.8rem; }
+        .copy-btn { background: #C5A059; color: #0B132B; padding: 0.25rem 0.75rem; border-radius: 1rem; font-size: 0.7rem; margin-left: 0.5rem; cursor: pointer; display: inline-block; }
     </style>
 </head>
 <body class="p-4 md:p-6">
@@ -26,7 +26,103 @@
         <div class="flex gap-2"><button id="whitepaperBtn" class="btn-secondary px-3 py-1 text-xs rounded-full">📄 Whitepaper</button><button id="whitelistBtn" class="btn-secondary px-3 py-1 text-xs rounded-full">✍️ Whitelist</button></div>
     </div>
 
-    <!-- Поле ввода кошелька -->
-    <div class="glass p-5 mb-6">
-        <label class="block text-sm mb-2 opacity-80">🔑 Ваш Solana кошелёк (для зачисления/учёта)</label>
-        <input type="text" id="userWallet" placeholder="Например: AXhysCBFq7JAoBxU7osLTj6wq9VjJ
+    <!-- Счётчики -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+        <div class="glass p-4 text-center"><div class="text-sm opacity-70">📿 За Бога (отправлено VBDC на DEUS)</div><div class="text-2xl font-bold text-green-400" id="forGodCount">1247</div></div>
+        <div class="glass p-4 text-center"><div class="text-sm opacity-70">💀 Против Бога (сожжено DEUS или VBST)</div><div class="text-2xl font-bold text-red-400" id="againstGodCount">42</div></div>
+    </div>
+
+    <!-- Токены -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+        <!-- DEUS -->
+        <div class="glass p-5 text-center">
+            <img src="https://raw.githubusercontent.com/byt-assist/catholic-chainbank/refs/heads/main/deus.png" class="w-20 h-20 mx-auto mb-3 rounded-full border-2 border-yellow-500/50">
+            <h2 class="text-xl font-bold">VBDT (DEUS)</h2>
+            <div class="text-2xl font-bold mt-2">$101.82</div>
+            <div class="mt-4 space-y-2">
+                <a href="https://app.meteora.ag/pool/enumCPSnPzkWwm5Xn7MucPBdXcn8DdoYyr1Srwr8KSh" target="_blank" class="btn btn-primary w-full block">💰 Купить на Meteora</a>
+                <button id="showBurnDeusBtn" class="btn-danger w-full py-2 rounded-full text-sm">💀 Сжечь DEUS (против Бога)</button>
+            </div>
+        </div>
+        <!-- SANCTUS -->
+        <div class="glass p-5 text-center">
+            <img src="https://raw.githubusercontent.com/byt-assist/catholic-chainbank/refs/heads/main/sanctus.png" class="w-20 h-20 mx-auto mb-3 rounded-full border-2 border-blue-500/50">
+            <h2 class="text-xl font-bold">VBST (SANCTUS)</h2>
+            <div class="text-2xl font-bold mt-2">$1.00</div>
+            <div class="mt-4 space-y-2">
+                <a href="https://app.meteora.ag/pool/2adyu61MPcoGz7Jv6PFZTcqeK43k1kbqt32Yxu5i3sSt" target="_blank" class="btn btn-primary w-full block">💰 Купить на Meteora</a>
+                <button id="showBurnVbstBtn" class="btn-secondary w-full py-2 rounded-full text-sm">🕯️ Сжечь VBST (свеча)</button>
+                <button id="showEternalBtn" class="btn-primary w-full py-2 rounded-full text-sm">✨ Вечная свеча (1 VBST + 1 VBDC)</button>
+            </div>
+        </div>
+        <!-- DIABOLUS -->
+        <div class="glass p-5 text-center">
+            <img src="https://raw.githubusercontent.com/byt-assist/catholic-chainbank/refs/heads/main/diabolus.png" class="w-20 h-20 mx-auto mb-3 rounded-full border-2 border-red-500/50">
+            <h2 class="text-xl font-bold">VBDC (DIABOLUS)</h2>
+            <div class="text-2xl font-bold mt-2">$0.99</div>
+            <div class="mt-4 space-y-2">
+                <a href="https://app.meteora.ag/pool/8VBBurpkCtn8jsvUMh95sFgrzVa5pxzKiDd48amykUeA" target="_blank" class="btn btn-primary w-full block">💰 Купить на Meteora</a>
+                <button id="showSendToDeusBtn" class="btn-primary w-full py-2 rounded-full text-sm">✝️ Отправить VBDC на DEUS (За Бога)</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Стена искуплённых -->
+    <div class="glass p-6 mb-8">
+        <h3 class="text-xl font-bold mb-3 text-center">📖 Стена искуплённых (отправившие VBDC на DEUS)</h3>
+        <div class="max-h-48 overflow-y-auto space-y-1 font-mono text-xs" id="redeemedList"><div class="text-center opacity-70">Пока никого. Станьте первым!</div></div>
+    </div>
+
+    <div class="glass p-5 text-sm opacity-70 text-center">
+        ⚡ Как это работает: нажмите на нужное действие → откроется окно с адресом, куда отправить токены. Вы отправляете ровно указанное количество с вашего кошелька. После отправки транзакция появляется в блокчейне. Мы обновляем счётчики и стену искуплённых вручную.
+    </div>
+</div>
+
+<!-- Модальное окно для адреса -->
+<div id="addressModal" class="modal">
+    <div class="modal-content">
+        <button class="float-right text-2xl close-modal" id="closeModalBtn">&times;</button>
+        <h3 class="text-xl font-bold mb-3" id="modalTitle">Отправить токены</h3>
+        <p id="modalDesc" class="text-sm mb-2">Отправьте точно указанное количество на этот адрес:</p>
+        <div class="address-box mb-3" id="modalAddress">Адрес</div>
+        <button id="copyAddressBtn" class="copy-btn">📋 Копировать адрес</button>
+        <p class="text-xs opacity-60 mt-3">Количество: 1 токен (1 000 000 000 с учётом decimals). Используйте стандартный перевод в вашем кошельке Phantom.</p>
+    </div>
+</div>
+
+<!-- Модалки -->
+<div id="whitepaperModal" class="modal"><div class="modal-content"><button class="float-right text-2xl close-modal">&times;</button><h2 class="text-2xl font-bold mb-4">📄 Whitepaper</h2><p><strong>VBDT (DEUS):</strong> Divine token, 10B supply.</p><p><strong>VBST (SANCTUS):</strong> Charity token, burn for candles.</p><p><strong>VBDC (DIABOLUS):</strong> Send to DEUS address to be redeemed.</p></div></div>
+<div id="whitelistModal" class="modal"><div class="modal-content"><button class="float-right text-2xl close-modal">&times;</button><h2 class="text-2xl font-bold mb-4">✍️ Whitelist</h2><input type="text" id="wlWallet" placeholder="Solana wallet" class="w-full p-2 rounded bg-black/50 border mb-2"><input type="text" id="wlName" placeholder="Your name" class="w-full p-2 rounded bg-black/50 border mb-4"><button id="submitWhitelist" class="btn-primary w-full py-2 rounded-full">Submit</button></div></div>
+
+<script>
+    const ADDRESSES = {
+        BURN: "11111111111111111111111111111111",
+        DEUS: "AXhysCBFq7JAoBxU7osLTj6wq9VjJxESiv5Z759ZfBmZ"
+    };
+    const MODAL = document.getElementById('addressModal');
+    const MODAL_TITLE = document.getElementById('modalTitle');
+    const MODAL_DESC = document.getElementById('modalDesc');
+    const MODAL_ADDRESS = document.getElementById('modalAddress');
+
+    function showModal(title, desc, address) {
+        MODAL_TITLE.innerText = title;
+        MODAL_DESC.innerText = desc;
+        MODAL_ADDRESS.innerText = address;
+        MODAL.style.display = 'flex';
+    }
+    document.getElementById('showBurnVbstBtn').onclick = () => showModal('🕯️ Сжечь VBST', 'Отправьте 1 VBST на этот адрес сжигания:', ADDRESSES.BURN);
+    document.getElementById('showBurnDeusBtn').onclick = () => showModal('💀 Сжечь DEUS', 'Отправьте 1 DEUS на этот адрес сжигания:', ADDRESSES.BURN);
+    document.getElementById('showSendToDeusBtn').onclick = () => showModal('✝️ Отправить VBDC на DEUS', 'Отправьте 1 VBDC на адрес Бога:', ADDRESSES.DEUS);
+    document.getElementById('showEternalBtn').onclick = () => showModal('✨ Вечная свеча', 'Отправьте 1 VBST на нулевой адрес (сжечь) и 1 VBDC на адрес DEUS. Две отдельные транзакции.', ADDRESSES.DEUS + ' (VBDC) и ' + ADDRESSES.BURN + ' (VBST)');
+    document.getElementById('copyAddressBtn').onclick = () => { navigator.clipboard.writeText(MODAL_ADDRESS.innerText); alert('Адрес скопирован'); };
+    document.getElementById('closeModalBtn').onclick = () => MODAL.style.display = 'none';
+    window.onclick = (e) => { if(e.target === MODAL) MODAL.style.display = 'none'; };
+
+    const wpModal = document.getElementById('whitepaperModal'), wlModal = document.getElementById('whitelistModal');
+    document.getElementById('whitepaperBtn').onclick = () => wpModal.style.display = 'flex';
+    document.getElementById('whitelistBtn').onclick = () => wlModal.style.display = 'flex';
+    document.querySelectorAll('.close-modal').forEach(btn => btn.onclick = () => { wpModal.style.display = 'none'; wlModal.style.display = 'none'; });
+    document.getElementById('submitWhitelist').onclick = () => { alert("Заявка отправлена"); wlModal.style.display = 'none'; };
+</script>
+</body>
+</html>
