@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Свечи · Chain Bank</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background: radial-gradient(circle at 10% 20%, #0B132B, #070C1A); color: white; }
+        .glass { background: rgba(255,255,255,0.05); backdrop-filter: blur(16px); border-radius: 2rem; padding: 1.5rem; margin-bottom: 1.5rem; }
+        .eternal { background: rgba(255,215,0,0.15); border-left: 4px solid gold; }
+    </style>
+</head>
+<body class="p-4">
+    <div class="max-w-3xl mx-auto">
+        <div class="flex justify-between items-center mb-6">
+            <h1 class="text-3xl font-bold">🕯️ Свечи и искупление</h1>
+            <a href="index.html" class="btn">← На главную</a>
+        </div>
+
+        <div class="glass" id="candlesContainer">
+            <h2 class="text-xl font-bold mb-3">🔥 Горящие свечи</h2>
+            <div id="candlesList" class="space-y-2"></div>
+        </div>
+    </div>
+
+    <script>
+        function loadCandles() {
+            const candles = JSON.parse(localStorage.getItem('candles') || '[]');
+            const now = new Date();
+            const activeCandles = candles.filter(c => {
+                if (c.action === 'eternal') return true;
+                if (c.expires && new Date(c.expires) > now) return true;
+                return false;
+            });
+
+            const container = document.getElementById('candlesList');
+            if (activeCandles.length === 0) {
+                container.innerHTML = '<div class="opacity-60 text-center">Пока нет свечей. Зажгите первую!</div>';
+                return;
+            }
+
+            container.innerHTML = activeCandles.map(c => {
+                const isEternal = c.action === 'eternal';
+                const displayName = c.name || c.wallet.slice(0,8);
+                const timeText = isEternal ? '✨ ВЕЧНАЯ СВЕЧА ✨' : `🕯️ горит до ${new Date(c.expires).
