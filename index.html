@@ -40,7 +40,6 @@
 
     <!-- Токены -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-        <!-- DEUS -->
         <div class="glass p-5 text-center">
             <img src="https://raw.githubusercontent.com/byt-assist/catholic-chainbank/refs/heads/main/deus.png" class="w-20 h-20 mx-auto mb-3 rounded-full border-2 border-yellow-500/50">
             <h2 class="text-xl font-bold">VBDT (DEUS)</h2>
@@ -51,7 +50,6 @@
             </div>
             <div id="burnDeusStatus" class="status"></div>
         </div>
-        <!-- SANCTUS -->
         <div class="glass p-5 text-center">
             <img src="https://raw.githubusercontent.com/byt-assist/catholic-chainbank/refs/heads/main/sanctus.png" class="w-20 h-20 mx-auto mb-3 rounded-full border-2 border-blue-500/50">
             <h2 class="text-xl font-bold">VBST (SANCTUS)</h2>
@@ -63,7 +61,6 @@
             </div>
             <div id="burnVbstStatus" class="status"></div>
         </div>
-        <!-- DIABOLUS -->
         <div class="glass p-5 text-center">
             <img src="https://raw.githubusercontent.com/byt-assist/catholic-chainbank/refs/heads/main/diabolus.png" class="w-20 h-20 mx-auto mb-3 rounded-full border-2 border-red-500/50">
             <h2 class="text-xl font-bold">VBDC (DIABOLUS)</h2>
@@ -76,49 +73,47 @@
         </div>
     </div>
 
-    <!-- Стена искуплённых -->
     <div class="glass p-6 mb-8">
-        <h3 class="text-xl font-bold mb-3 text-center">📖 Стена искуплённых (отправившие VBDC на DEUS)</h3>
-        <div class="max-h-48 overflow-y-auto space-y-1 font-mono text-xs" id="redeemedList"><div class="text-center opacity-70">Пока никого. Станьте первым!</div></div>
+        <h3 class="text-xl font-bold mb-3 text-center">📖 Стена искуплённых</h3>
+        <div class="max-h-48 overflow-y-auto space-y-1 font-mono text-xs" id="redeemedList"><div class="text-center opacity-70">Пока никого</div></div>
     </div>
 </div>
 
 <!-- Модалки -->
-<div id="whitepaperModal" class="modal"><div class="modal-content"><button class="float-right text-2xl close-modal">&times;</button><h2 class="text-2xl font-bold mb-4">📄 Whitepaper</h2><p><strong>VBDT (DEUS):</strong> Divine token, 10B supply. Burning = against God.</p><p><strong>VBST (SANCTUS):</strong> Charity token, burn for candles.</p><p><strong>VBDC (DIABOLUS):</strong> Send to DEUS address to be redeemed.</p></div></div>
+<div id="whitepaperModal" class="modal"><div class="modal-content"><button class="float-right text-2xl close-modal">&times;</button><h2 class="text-2xl font-bold mb-4">📄 Whitepaper</h2><p><strong>VBDT (DEUS):</strong> Divine token, 10B supply.</p><p><strong>VBST (SANCTUS):</strong> Charity token, burn for candles.</p><p><strong>VBDC (DIABOLUS):</strong> Send to DEUS address to be redeemed.</p></div></div>
 <div id="whitelistModal" class="modal"><div class="modal-content"><button class="float-right text-2xl close-modal">&times;</button><h2 class="text-2xl font-bold mb-4">✍️ Whitelist</h2><input type="text" id="wlWallet" placeholder="Solana wallet" class="w-full p-2 rounded bg-black/50 border mb-2"><input type="text" id="wlName" placeholder="Your name" class="w-full p-2 rounded bg-black/50 border mb-4"><button id="submitWhitelist" class="btn-primary w-full py-2 rounded-full">Submit</button></div></div>
 
 <script>
-    // ---------- Конфиг ----------
-    const TOKENS = {
-        VBDT: "AXhysCBFq7JAoBxU7osLTj6wq9VjJxESiv5Z759ZfBmZ",
-        VBST: "8mse7Sm7xy1pfp6cP8LdZ1oh2RsdGAZajuEENDd2tbbk",
-        VBDC: "2zaWrMgqduTVfVRbnzPxuk4Sd9v5ifAsfVeSCkPgYYXj"
-    };
+    const TOKENS = { VBDT: "AXhysCBFq7JAoBxU7osLTj6wq9VjJxESiv5Z759ZfBmZ", VBST: "8mse7Sm7xy1pfp6cP8LdZ1oh2RsdGAZajuEENDd2tbbk", VBDC: "2zaWrMgqduTVfVRbnzPxuk4Sd9v5ifAsfVeSCkPgYYXj" };
     const DEUS_ADDRESS = TOKENS.VBDT;
     let connection = null;
     let wallet = null;
+    let isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
-    // ---------- Подключение кошелька ----------
     async function connectWallet() {
-        if (!window.solana) {
-            alert("❌ Установите Phantom: https://phantom.app");
+        if (isMobile) {
+            // Для мобильных — открываем приложение Phantom через deep link
+            const url = encodeURIComponent(window.location.href);
+            const phantomLink = `phantom://browse?url=${url}`;
+            window.location.href = phantomLink;
+            setTimeout(() => {
+                if (!wallet) alert("❌ Установите Phantom из Google Play или откройте ссылку в браузере Phantom");
+            }, 2000);
             return false;
-        }
-        try {
-            const resp = await window.solana.connect();
-            wallet = resp.publicKey.toString();
-            document.getElementById('walletStatus').innerHTML = `✅ ${wallet.slice(0,4)}...${wallet.slice(-4)}`;
-            connection = new solanaWeb3.Connection("https://api.mainnet-beta.solana.com");
-            return true;
-        } catch (err) {
-            alert("❌ Ошибка подключения: " + err.message);
-            return false;
+        } else {
+            if (!window.solana) { alert("❌ Установите расширение Phantom"); return false; }
+            try {
+                const resp = await window.solana.connect();
+                wallet = resp.publicKey.toString();
+                document.getElementById('walletStatus').innerHTML = `✅ ${wallet.slice(0,4)}...${wallet.slice(-4)}`;
+                connection = new solanaWeb3.Connection("https://api.mainnet-beta.solana.com");
+                return true;
+            } catch(e) { alert("❌ " + e.message); return false; }
         }
     }
 
-    // ---------- Вспомогательная функция для транзакций ----------
     async function sendTransaction(instruction) {
-        if (!wallet || !connection) throw new Error("Кошелёк не подключён");
+        if (!wallet) throw new Error("Кошелёк не подключён");
         const tx = new solanaWeb3.Transaction().add(instruction);
         const { blockhash } = await connection.getLatestBlockhash();
         tx.recentBlockhash = blockhash;
@@ -129,105 +124,85 @@
         return sig;
     }
 
-    // ---------- Кнопки ----------
-    // 1. Сжечь VBST (свеча)
-    document.getElementById('burnVbstBtn').onclick = async () => {
+    // ---- Кнопки (работают только если кошелёк уже подключён) ----
+    async function actionWrapper(actionName, callback) {
         if (!wallet) { alert("Сначала подключите кошелёк"); return; }
-        const statusDiv = document.getElementById('burnVbstStatus');
-        statusDiv.innerText = "⏳ Сжигаем VBST...";
-        try {
-            const accounts = await connection.getTokenAccountsByOwner(new solanaWeb3.PublicKey(wallet), { mint: new solanaWeb3.PublicKey(TOKENS.VBST) });
-            if (accounts.value.length === 0) throw new Error("Нет VBST");
-            const ata = accounts.value[0].pubkey;
-            const ix = splToken.createBurnInstruction(ata, new solanaWeb3.PublicKey(TOKENS.VBST), new solanaWeb3.PublicKey(wallet), 1e9, [], splToken.TOKEN_2022_PROGRAM_ID);
-            const sig = await sendTransaction(ix);
-            statusDiv.innerText = `✅ Сожжён 1 VBST! ${sig.slice(0,16)}...`;
-            let against = parseInt(document.getElementById('againstGodCount').innerText) + 1;
-            document.getElementById('againstGodCount').innerText = against;
-        } catch(e) { statusDiv.innerText = `❌ ${e.message}`; }
-    };
+        const statusDiv = document.getElementById(actionName + 'Status');
+        if (statusDiv) statusDiv.innerText = "⏳ Выполняется...";
+        try { await callback(); }
+        catch(e) { if (statusDiv) statusDiv.innerText = `❌ ${e.message}`; }
+    }
 
-    // 2. Отправить VBDC на DEUS (За Бога)
-    document.getElementById('sendToDeusBtn').onclick = async () => {
-        if (!wallet) { alert("Сначала подключите кошелёк"); return; }
-        const statusDiv = document.getElementById('sendToDeusStatus');
-        statusDiv.innerText = "⏳ Отправляем VBDC на DEUS...";
-        try {
-            const fromAccounts = await connection.getTokenAccountsByOwner(new solanaWeb3.PublicKey(wallet), { mint: new solanaWeb3.PublicKey(TOKENS.VBDC) });
-            if (fromAccounts.value.length === 0) throw new Error("Нет VBDC");
-            const fromAta = fromAccounts.value[0].pubkey;
-            const toAta = await splToken.getOrCreateAssociatedTokenAccount(connection, window.solana, new solanaWeb3.PublicKey(TOKENS.VBDC), new solanaWeb3.PublicKey(DEUS_ADDRESS), true, "confirmed", {}, splToken.TOKEN_2022_PROGRAM_ID);
-            const ix = splToken.createTransferInstruction(fromAta, toAta.address, new solanaWeb3.PublicKey(wallet), 1e9, [], splToken.TOKEN_2022_PROGRAM_ID);
-            const sig = await sendTransaction(ix);
-            statusDiv.innerText = `✅ Отправлен 1 VBDC на DEUS! ${sig.slice(0,16)}...`;
-            let forgod = parseInt(document.getElementById('forGodCount').innerText) + 1;
-            document.getElementById('forGodCount').innerText = forgod;
-            const listDiv = document.getElementById('redeemedList');
-            if (listDiv.innerHTML.includes("Пока никого")) listDiv.innerHTML = "";
-            listDiv.innerHTML += `<div class="text-center opacity-80">✝️ ${wallet.slice(0,6)}...${wallet.slice(-4)}</div>`;
-        } catch(e) { statusDiv.innerText = `❌ ${e.message}`; }
-    };
+    document.getElementById('burnVbstBtn').onclick = () => actionWrapper('burnVbst', async () => {
+        const accounts = await connection.getTokenAccountsByOwner(new solanaWeb3.PublicKey(wallet), { mint: new solanaWeb3.PublicKey(TOKENS.VBST) });
+        if (accounts.value.length === 0) throw new Error("Нет VBST");
+        const ata = accounts.value[0].pubkey;
+        const ix = splToken.createBurnInstruction(ata, new solanaWeb3.PublicKey(TOKENS.VBST), new solanaWeb3.PublicKey(wallet), 1e9, [], splToken.TOKEN_2022_PROGRAM_ID);
+        const sig = await sendTransaction(ix);
+        document.getElementById('burnVbstStatus').innerText = `✅ Сожжён! ${sig.slice(0,16)}...`;
+        let c = parseInt(document.getElementById('againstGodCount').innerText) + 1;
+        document.getElementById('againstGodCount').innerText = c;
+    });
 
-    // 3. Сжечь DEUS (Против Бога)
-    document.getElementById('burnDeusBtn').onclick = async () => {
-        if (!wallet) { alert("Сначала подключите кошелёк"); return; }
-        const statusDiv = document.getElementById('burnDeusStatus');
-        statusDiv.innerText = "⏳ Сжигаем DEUS...";
-        try {
-            const accounts = await connection.getTokenAccountsByOwner(new solanaWeb3.PublicKey(wallet), { mint: new solanaWeb3.PublicKey(TOKENS.VBDT) });
-            if (accounts.value.length === 0) throw new Error("Нет DEUS");
-            const ata = accounts.value[0].pubkey;
-            const ix = splToken.createBurnInstruction(ata, new solanaWeb3.PublicKey(TOKENS.VBDT), new solanaWeb3.PublicKey(wallet), 1e9, [], splToken.TOKEN_2022_PROGRAM_ID);
-            const sig = await sendTransaction(ix);
-            statusDiv.innerText = `✅ Сожжён 1 DEUS (против Бога)! ${sig.slice(0,16)}...`;
-            let against = parseInt(document.getElementById('againstGodCount').innerText) + 1;
-            document.getElementById('againstGodCount').innerText = against;
-        } catch(e) { statusDiv.innerText = `❌ ${e.message}`; }
-    };
+    document.getElementById('sendToDeusBtn').onclick = () => actionWrapper('sendToDeus', async () => {
+        const fromAccounts = await connection.getTokenAccountsByOwner(new solanaWeb3.PublicKey(wallet), { mint: new solanaWeb3.PublicKey(TOKENS.VBDC) });
+        if (fromAccounts.value.length === 0) throw new Error("Нет VBDC");
+        const fromAta = fromAccounts.value[0].pubkey;
+        const toAta = await splToken.getOrCreateAssociatedTokenAccount(connection, window.solana, new solanaWeb3.PublicKey(TOKENS.VBDC), new solanaWeb3.PublicKey(DEUS_ADDRESS), true, "confirmed", {}, splToken.TOKEN_2022_PROGRAM_ID);
+        const ix = splToken.createTransferInstruction(fromAta, toAta.address, new solanaWeb3.PublicKey(wallet), 1e9, [], splToken.TOKEN_2022_PROGRAM_ID);
+        const sig = await sendTransaction(ix);
+        document.getElementById('sendToDeusStatus').innerText = `✅ Отправлен! ${sig.slice(0,16)}...`;
+        let f = parseInt(document.getElementById('forGodCount').innerText) + 1;
+        document.getElementById('forGodCount').innerText = f;
+        const listDiv = document.getElementById('redeemedList');
+        if (listDiv.innerHTML.includes("Пока никого")) listDiv.innerHTML = "";
+        listDiv.innerHTML += `<div>✝️ ${wallet.slice(0,6)}...${wallet.slice(-4)}</div>`;
+    });
 
-    // 4. Вечная свеча (сжечь VBST + отправить VBDC на DEUS)
-    document.getElementById('eternalCandleBtn').onclick = async () => {
-        if (!wallet) { alert("Сначала подключите кошелёк"); return; }
-        const statusDiv = document.getElementById('burnVbstStatus');
-        statusDiv.innerText = "⏳ Зажигаем вечную свечу...";
-        try {
-            const vbstAccounts = await connection.getTokenAccountsByOwner(new solanaWeb3.PublicKey(wallet), { mint: new solanaWeb3.PublicKey(TOKENS.VBST) });
-            const vbdcAccounts = await connection.getTokenAccountsByOwner(new solanaWeb3.PublicKey(wallet), { mint: new solanaWeb3.PublicKey(TOKENS.VBDC) });
-            if (vbstAccounts.value.length === 0 || vbdcAccounts.value.length === 0) throw new Error("Нужно 1 VBST и 1 VBDC");
-            const ataVbst = vbstAccounts.value[0].pubkey;
-            const ataVbdc = vbdcAccounts.value[0].pubkey;
-            const burnIx = splToken.createBurnInstruction(ataVbst, new solanaWeb3.PublicKey(TOKENS.VBST), new solanaWeb3.PublicKey(wallet), 1e9, [], splToken.TOKEN_2022_PROGRAM_ID);
-            const toAta = await splToken.getOrCreateAssociatedTokenAccount(connection, window.solana, new solanaWeb3.PublicKey(TOKENS.VBDC), new solanaWeb3.PublicKey(DEUS_ADDRESS), true, "confirmed", {}, splToken.TOKEN_2022_PROGRAM_ID);
-            const transferIx = splToken.createTransferInstruction(ataVbdc, toAta.address, new solanaWeb3.PublicKey(wallet), 1e9, [], splToken.TOKEN_2022_PROGRAM_ID);
-            const tx = new solanaWeb3.Transaction().add(burnIx, transferIx);
-            const { blockhash } = await connection.getLatestBlockhash();
-            tx.recentBlockhash = blockhash;
-            tx.feePayer = new solanaWeb3.PublicKey(wallet);
-            const signed = await window.solana.signTransaction(tx);
-            const sig = await connection.sendRawTransaction(signed.serialize());
-            await connection.confirmTransaction(sig);
-            statusDiv.innerText = `✅ Вечная свеча зажжена! ${sig.slice(0,16)}...`;
-            let forgod = parseInt(document.getElementById('forGodCount').innerText) + 1;
-            document.getElementById('forGodCount').innerText = forgod;
-            const listDiv = document.getElementById('redeemedList');
-            if (listDiv.innerHTML.includes("Пока никого")) listDiv.innerHTML = "";
-            listDiv.innerHTML += `<div class="text-center opacity-80">✨ ${wallet.slice(0,6)}...${wallet.slice(-4)} (вечная свеча)</div>`;
-        } catch(e) { statusDiv.innerText = `❌ ${e.message}`; }
-    };
+    document.getElementById('burnDeusBtn').onclick = () => actionWrapper('burnDeus', async () => {
+        const accounts = await connection.getTokenAccountsByOwner(new solanaWeb3.PublicKey(wallet), { mint: new solanaWeb3.PublicKey(TOKENS.VBDT) });
+        if (accounts.value.length === 0) throw new Error("Нет DEUS");
+        const ata = accounts.value[0].pubkey;
+        const ix = splToken.createBurnInstruction(ata, new solanaWeb3.PublicKey(TOKENS.VBDT), new solanaWeb3.PublicKey(wallet), 1e9, [], splToken.TOKEN_2022_PROGRAM_ID);
+        const sig = await sendTransaction(ix);
+        document.getElementById('burnDeusStatus').innerText = `✅ Сожжён! ${sig.slice(0,16)}...`;
+        let c = parseInt(document.getElementById('againstGodCount').innerText) + 1;
+        document.getElementById('againstGodCount').innerText = c;
+    });
 
-    // ---------- Модалки ----------
-    const wpModal = document.getElementById('whitepaperModal');
-    const wlModal = document.getElementById('whitelistModal');
+    document.getElementById('eternalCandleBtn').onclick = () => actionWrapper('burnVbst', async () => {
+        const vbstAcc = await connection.getTokenAccountsByOwner(new solanaWeb3.PublicKey(wallet), { mint: new solanaWeb3.PublicKey(TOKENS.VBST) });
+        const vbdcAcc = await connection.getTokenAccountsByOwner(new solanaWeb3.PublicKey(wallet), { mint: new solanaWeb3.PublicKey(TOKENS.VBDC) });
+        if (vbstAcc.value.length === 0 || vbdcAcc.value.length === 0) throw new Error("Нужен 1 VBST и 1 VBDC");
+        const ataVbst = vbstAcc.value[0].pubkey;
+        const ataVbdc = vbdcAcc.value[0].pubkey;
+        const burnIx = splToken.createBurnInstruction(ataVbst, new solanaWeb3.PublicKey(TOKENS.VBST), new solanaWeb3.PublicKey(wallet), 1e9, [], splToken.TOKEN_2022_PROGRAM_ID);
+        const toAta = await splToken.getOrCreateAssociatedTokenAccount(connection, window.solana, new solanaWeb3.PublicKey(TOKENS.VBDC), new solanaWeb3.PublicKey(DEUS_ADDRESS), true, "confirmed", {}, splToken.TOKEN_2022_PROGRAM_ID);
+        const transferIx = splToken.createTransferInstruction(ataVbdc, toAta.address, new solanaWeb3.PublicKey(wallet), 1e9, [], splToken.TOKEN_2022_PROGRAM_ID);
+        const tx = new solanaWeb3.Transaction().add(burnIx, transferIx);
+        const { blockhash } = await connection.getLatestBlockhash();
+        tx.recentBlockhash = blockhash;
+        tx.feePayer = new solanaWeb3.PublicKey(wallet);
+        const signed = await window.solana.signTransaction(tx);
+        const sig = await connection.sendRawTransaction(signed.serialize());
+        await connection.confirmTransaction(sig);
+        document.getElementById('burnVbstStatus').innerText = `✅ Вечная свеча! ${sig.slice(0,16)}...`;
+        let f = parseInt(document.getElementById('forGodCount').innerText) + 1;
+        document.getElementById('forGodCount').innerText = f;
+        const listDiv = document.getElementById('redeemedList');
+        if (listDiv.innerHTML.includes("Пока никого")) listDiv.innerHTML = "";
+        listDiv.innerHTML += `<div>✨ ${wallet.slice(0,6)}...${wallet.slice(-4)} (вечная свеча)</div>`;
+    });
+
+    document.getElementById('connectWalletBtn').onclick = connectWallet;
+    connection = new solanaWeb3.Connection("https://api.mainnet-beta.solana.com");
+
+    // Модалки
+    const wpModal = document.getElementById('whitepaperModal'), wlModal = document.getElementById('whitelistModal');
     document.getElementById('whitepaperBtn').onclick = () => wpModal.style.display = 'flex';
     document.getElementById('whitelistBtn').onclick = () => wlModal.style.display = 'flex';
     document.querySelectorAll('.close-modal').forEach(btn => btn.onclick = () => { wpModal.style.display = 'none'; wlModal.style.display = 'none'; });
     document.getElementById('submitWhitelist').onclick = () => { alert("Заявка отправлена (демо)"); wlModal.style.display = 'none'; };
-
-    // ---------- Кнопка подключения ----------
-    document.getElementById('connectWalletBtn').onclick = connectWallet;
-
-    // Инициализация
-    connection = new solanaWeb3.Connection("https://api.mainnet-beta.solana.com");
 </script>
 </body>
 </html>
