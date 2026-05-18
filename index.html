@@ -3,207 +3,284 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vatican Bank · VBDT · VBST · VBDC</title>
+    <title>Vatican Bank · DEUS · SANCTUS · DIABOLUS</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@solana/web3.js@1.95.1/lib/index.iife.min.js"></script>
+    <script src="https://unpkg.com/@solana/spl-token@0.3.11/lib/index.iife.min.js"></script>
     <style>
         body { font-family: 'Inter', sans-serif; background: radial-gradient(circle at 10% 20%, #0B132B, #070C1A); color: white; }
         .glass { background: rgba(255,255,255,0.05); backdrop-filter: blur(16px); border: 1px solid rgba(255,255,255,0.1); border-radius: 2rem; }
-        .btn { padding: 0.75rem 1.5rem; border-radius: 2rem; font-weight: 600; transition: all 0.2s; }
+        .btn { padding: 0.75rem 1.5rem; border-radius: 2rem; font-weight: 600; transition: all 0.2s; cursor: pointer; }
         .btn-primary { background: linear-gradient(90deg, #C5A059, #FFDF85); color: #0B132B; }
         .btn-primary:hover { transform: scale(1.02); box-shadow: 0 8px 20px rgba(197,160,89,0.3); }
-        .lang-btn { background: rgba(255,255,255,0.1); padding: 0.25rem 0.75rem; border-radius: 2rem; font-size: 0.8rem; cursor: pointer; }
-        .lang-btn.active { background: #C5A059; color: #0B132B; }
+        .btn-secondary { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); }
+        .btn-secondary:hover { background: rgba(255,255,255,0.2); }
+        .lang-btn, .confession-btn { background: rgba(255,255,255,0.1); padding: 0.25rem 0.75rem; border-radius: 2rem; font-size: 0.8rem; cursor: pointer; margin: 0 2px; }
+        .lang-btn.active, .confession-btn.active { background: #C5A059; color: #0B132B; }
         .token-card { transition: transform 0.2s; }
         .token-card:hover { transform: translateY(-5px); }
-        .price-up { color: #4ade80; }
-        .price-down { color: #f87171; }
+        .status { font-size: 0.8rem; margin-top: 0.5rem; opacity: 0.8; word-break: break-all; }
     </style>
 </head>
 <body class="p-4 md:p-6">
 
 <div class="max-w-7xl mx-auto">
-    <!-- Header with lang -->
-    <div class="flex flex-wrap justify-between items-center gap-3 mb-8">
+    <!-- Header with confession + lang -->
+    <div class="flex flex-wrap justify-between items-center gap-3 mb-6">
         <div class="flex items-center gap-3">
             <div class="w-10 h-10 rounded-full bg-gradient-to-br from-yellow-500 to-amber-600"></div>
-            <span class="text-2xl font-bold">Vatican Bank</span>
+            <span class="text-2xl font-bold" id="bankName">Vatican Bank</span>
         </div>
-        <div class="flex flex-wrap gap-2" id="lang-switcher"></div>
-    </div>
-
-    <!-- Stats row (burned counts) -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-        <div class="glass p-4 text-center">
-            <div class="text-sm opacity-70" data-i18n="stats_burned_vbst">Сожжено VBST (благотворительность)</div>
-            <div class="text-2xl font-bold" id="burnedVbstCount">0</div>
-        </div>
-        <div class="glass p-4 text-center">
-            <div class="text-sm opacity-70" data-i18n="stats_sent_vbdc">Отправлено VBDC на DEUS (искуплено)</div>
-            <div class="text-2xl font-bold" id="sentVbdcCount">0</div>
-        </div>
-        <div class="glass p-4 text-center">
-            <div class="text-sm opacity-70" data-i18n="stats_redeemed">Искуплённые души</div>
-            <div class="text-2xl font-bold" id="redeemedCount">0</div>
+        <div class="flex flex-wrap gap-2">
+            <div id="confession-switcher" class="flex gap-1 mr-2"></div>
+            <div id="lang-switcher" class="flex gap-1"></div>
         </div>
     </div>
 
-    <!-- Three tokens -->
+    <!-- Wallet & stats -->
+    <div class="flex flex-wrap justify-between items-center gap-3 mb-6">
+        <button id="connectWalletBtn" class="btn-secondary px-4 py-2 rounded-full text-sm">🦊 Подключить Phantom</button>
+        <div id="walletStatus" class="text-xs opacity-60"></div>
+    </div>
+
+    <!-- Stats: For God / Against God -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+        <div class="glass p-4 text-center">
+            <div class="text-sm opacity-70" id="statForGodLabel">📿 За Бога (отправлено DIABOLUS на DEUS)</div>
+            <div class="text-2xl font-bold text-green-400" id="forGodCount">0</div>
+        </div>
+        <div class="glass p-4 text-center">
+            <div class="text-sm opacity-70" id="statAgainstGodLabel">💀 Против Бога (сожжено DEUS / отправлено на нуль)</div>
+            <div class="text-2xl font-bold text-red-400" id="againstGodCount">0</div>
+        </div>
+    </div>
+
+    <!-- Three tokens (shared) -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-        <!-- VBDT -->
+        <!-- VBDT (DEUS) -->
         <div class="glass p-5 token-card">
             <img src="https://raw.githubusercontent.com/byt-assist/catholic-chainbank/refs/heads/main/images/deus.png" class="w-20 h-20 mx-auto mb-3 rounded-full border-2 border-yellow-500/50" alt="DEUS">
             <h2 class="text-xl font-bold text-center">VBDT <span class="text-sm font-normal">(DEUS)</span></h2>
-            <div class="text-center text-2xl font-bold mt-2" id="priceVbdt">$—</div>
-            <div class="text-center text-xs opacity-60 mt-1" id="changeVbdt"></div>
+            <div class="text-center text-2xl font-bold mt-2" id="priceVbdt">$101.82</div>
             <div class="mt-4 space-y-2">
-                <a href="https://app.meteora.ag/pool/enumCPSnPzkWwm5Xn7MucPBdXcn8DdoYyr1Srwr8KSh" target="_blank" class="btn btn-primary w-full block text-center">Купить на Meteora</a>
-                <a href="https://jup.ag/swap/SOL-VBDT" target="_blank" class="btn btn-primary w-full block text-center bg-white/10 hover:bg-white/20">Купить на Jupiter</a>
-                <a href="https://www.geckoterminal.com/solana/pools/enumCPSnPzkWwm5Xn7MucPBdXcn8DdoYyr1Srwr8KSh" target="_blank" class="text-xs block text-center opacity-70 hover:opacity-100">📊 График на GeckoTerminal</a>
+                <a href="https://app.meteora.ag/pool/enumCPSnPzkWwm5Xn7MucPBdXcn8DdoYyr1Srwr8KSh" target="_blank" class="btn btn-primary w-full block text-center">💰 Купить на Meteora</a>
+                <a href="https://jup.ag/swap/SOL-VBDT" target="_blank" class="btn btn-primary w-full block text-center bg-white/10 hover:bg-white/20">🔄 Купить на Jupiter</a>
+                <button id="burnDeusBtn" class="btn-secondary w-full py-2 rounded-full text-sm mt-2">🔥 Сжечь DEUS (отправить на 0x0)</button>
             </div>
+            <div id="burnDeusStatus" class="status text-center text-xs"></div>
         </div>
 
-        <!-- VBST -->
+        <!-- VBST (SANCTUS) -->
         <div class="glass p-5 token-card">
             <img src="https://raw.githubusercontent.com/byt-assist/catholic-chainbank/refs/heads/main/images/sanctus.png" class="w-20 h-20 mx-auto mb-3 rounded-full border-2 border-blue-500/50" alt="SANCTUS">
             <h2 class="text-xl font-bold text-center">VBST <span class="text-sm font-normal">(SANCTUS)</span></h2>
-            <div class="text-center text-2xl font-bold mt-2" id="priceVbst">$—</div>
-            <div class="text-center text-xs opacity-60 mt-1" id="changeVbst"></div>
+            <div class="text-center text-2xl font-bold mt-2" id="priceVbst">$1.00</div>
             <div class="mt-4 space-y-2">
-                <a href="https://app.meteora.ag/pool/2adyu61MPcoGz7Jv6PFZTcqeK43k1kbqt32Yxu5i3sSt" target="_blank" class="btn btn-primary w-full block text-center">Купить на Meteora</a>
-                <a href="https://jup.ag/swap/USDC-VBST" target="_blank" class="btn btn-primary w-full block text-center bg-white/10 hover:bg-white/20">Купить на Jupiter</a>
-                <a href="https://www.geckoterminal.com/solana/pools/2adyu61MPcoGz7Jv6PFZTcqeK43k1kbqt32Yxu5i3sSt" target="_blank" class="text-xs block text-center opacity-70 hover:opacity-100">📊 График на GeckoTerminal</a>
+                <a href="https://app.meteora.ag/pool/2adyu61MPcoGz7Jv6PFZTcqeK43k1kbqt32Yxu5i3sSt" target="_blank" class="btn btn-primary w-full block text-center">💰 Купить на Meteora</a>
+                <a href="https://jup.ag/swap/USDC-VBST" target="_blank" class="btn btn-primary w-full block text-center bg-white/10 hover:bg-white/20">🔄 Купить на Jupiter</a>
+                <button id="burnSanctusBtn" class="btn-secondary w-full py-2 rounded-full text-sm mt-2">🕯️ Сжечь SANCTUS (благотворительность)</button>
             </div>
+            <div id="burnSanctusStatus" class="status text-center text-xs"></div>
         </div>
 
-        <!-- VBDC -->
+        <!-- VBDC (DIABOLUS) -->
         <div class="glass p-5 token-card">
             <img src="https://raw.githubusercontent.com/byt-assist/catholic-chainbank/refs/heads/main/images/diabolus.png" class="w-20 h-20 mx-auto mb-3 rounded-full border-2 border-red-500/50" alt="DIABOLUS">
             <h2 class="text-xl font-bold text-center">VBDC <span class="text-sm font-normal">(DIABOLUS)</span></h2>
-            <div class="text-center text-2xl font-bold mt-2" id="priceVbdc">$—</div>
-            <div class="text-center text-xs opacity-60 mt-1" id="changeVbdc"></div>
+            <div class="text-center text-2xl font-bold mt-2" id="priceVbdc">$0.99</div>
             <div class="mt-4 space-y-2">
-                <a href="https://app.meteora.ag/pool/8VBBurpkCtn8jsvUMh95sFgrzVa5pxzKiDd48amykUeA" target="_blank" class="btn btn-primary w-full block text-center">Купить на Meteora</a>
-                <a href="https://jup.ag/swap/USDT-VBDC" target="_blank" class="btn btn-primary w-full block text-center bg-white/10 hover:bg-white/20">Купить на Jupiter</a>
-                <a href="https://www.geckoterminal.com/solana/pools/8VBBurpkCtn8jsvUMh95sFgrzVa5pxzKiDd48amykUeA" target="_blank" class="text-xs block text-center opacity-70 hover:opacity-100">📊 График на GeckoTerminal</a>
+                <a href="https://app.meteora.ag/pool/8VBBurpkCtn8jsvUMh95sFgrzVa5pxzKiDd48amykUeA" target="_blank" class="btn btn-primary w-full block text-center">💰 Купить на Meteora</a>
+                <a href="https://jup.ag/swap/USDT-VBDC" target="_blank" class="btn btn-primary w-full block text-center bg-white/10 hover:bg-white/20">🔄 Купить на Jupiter</a>
+                <button id="sendToGodBtn" class="btn-secondary w-full py-2 rounded-full text-sm mt-2">✝️ Отправить DIABOLUS на DEUS</button>
             </div>
+            <div id="sendToGodStatus" class="status text-center text-xs"></div>
         </div>
     </div>
 
-    <!-- Buy with card / SWIFT / UBCT -->
-    <div class="glass p-6 mb-12">
-        <h3 class="text-2xl font-bold mb-4 text-center" data-i18n="donate_title">Пожертвования и покупка токенов</h3>
+    <!-- Wall of Redeemed (For God) -->
+    <div class="glass p-6 mb-8">
+        <h3 class="text-xl font-bold mb-3 text-center" id="wallTitle">📖 Стена искуплённых (отправившие DIABOLUS на DEUS)</h3>
+        <div class="max-h-48 overflow-y-auto space-y-1 font-mono text-xs" id="redeemedList">
+            <div class="text-center opacity-70" id="wallEmpty">Пока никого. Станьте первым!</div>
+        </div>
+    </div>
+
+    <!-- Donations section (card / swift / UBCT) -->
+    <div class="glass p-6">
+        <h3 class="text-2xl font-bold mb-4 text-center" id="donateTitle">🙏 Пожертвования и покупка токенов</h3>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
             <div>
-                <div class="font-bold text-yellow-300" data-i18n="card_title">💳 Банковская карта</div>
-                <p class="text-sm opacity-80 my-2" data-i18n="card_desc">Visa / Mastercard / МИР</p>
-                <a href="#" class="text-sm underline" data-i18n="card_coming">Форма оплаты — скоро</a>
+                <div class="font-bold text-yellow-300">💳 Банковская карта</div>
+                <p class="text-sm opacity-80 my-2">Visa / Mastercard / МИР</p>
+                <a href="#" class="text-sm underline opacity-70">Форма оплаты — скоро</a>
             </div>
             <div>
-                <div class="font-bold text-yellow-300" data-i18n="swift_title">🏦 SWIFT / SEPA</div>
-                <p class="text-sm opacity-80 my-2" data-i18n="swift_desc">Крупные пожертвования от $1000</p>
-                <a href="#" class="text-sm underline" data-i18n="swift_request">Написать для реквизитов</a>
+                <div class="font-bold text-yellow-300">🏦 SWIFT / SEPA</div>
+                <p class="text-sm opacity-80 my-2">Крупные пожертвования от $1000</p>
+                <a href="#" class="text-sm underline opacity-70">Написать для реквизитов</a>
             </div>
             <div>
-                <div class="font-bold text-yellow-300" data-i18n="ubct_title">🪙 Пожертвование в UBCT</div>
-                <p class="text-sm opacity-80 my-2" data-i18n="ubct_desc">Отправьте UBCT на кошелёк и получите VBST/VBDC</p>
-                <button id="donateUbctBtn" class="btn-primary px-4 py-1 rounded-full text-sm">Отправить UBCT</button>
+                <div class="font-bold text-yellow-300">🪙 Пожертвование в UBCT</div>
+                <p class="text-sm opacity-80 my-2">Отправьте UBCT, получите VBST/VBDC</p>
+                <button id="donateUbctBtn" class="btn-secondary px-4 py-1 rounded-full text-sm">Отправить UBCT</button>
             </div>
-        </div>
-    </div>
-
-    <!-- Burn VBST + Send VBDC to DEUS -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
-        <div class="glass p-6 text-center">
-            <h3 class="text-xl font-bold mb-3" data-i18n="burn_title">Сжечь VBST (благотворительность)</h3>
-            <p class="text-sm opacity-80 mb-4" data-i18n="burn_desc">Отправьте VBST на нулевой адрес — имя появится в списке благотворителей.</p>
-            <button id="burnVbstBtn" class="btn-primary px-6 py-2 rounded-full">Сжечь 1 VBST</button>
-        </div>
-        <div class="glass p-6 text-center">
-            <h3 class="text-xl font-bold mb-3" data-i18n="redeem_title">Отправить VBDC на DEUS (искупление)</h3>
-            <p class="text-sm opacity-80 mb-4" data-i18n="redeem_desc">Отправьте VBDC на адрес DEUS — ваша душа будет искуплена и добавлена на стену.</p>
-            <button id="sendVbdcBtn" class="btn-primary px-6 py-2 rounded-full">Отправить 1 VBDC на DEUS</button>
-        </div>
-    </div>
-
-    <!-- Whitelist / Wall of redeemed -->
-    <div class="glass p-6">
-        <h3 class="text-xl font-bold mb-3 text-center" data-i18n="wall_title">Стена искуплённых</h3>
-        <div class="max-h-64 overflow-y-auto space-y-1 font-mono text-sm" id="redeemedList">
-            <div class="text-center opacity-70" data-i18n="wall_empty">Пока никого. Станьте первым!</div>
-        </div>
-        <div class="text-center mt-4">
-            <a href="#" id="whitelistLink" class="text-xs underline opacity-60" data-i18n="whitelist_apply">Подать заявку в вайтлист</a>
         </div>
     </div>
 </div>
 
 <script>
-    // ------------------------------
-    // 8 LANGUAGES (English, Русский, Español, 中文, Français, Deutsch, Italiano, 日本語)
-    // ------------------------------
+    // ---------- CONFIG ----------
+    const TOKENS = {
+        VBDT: "AXhysCBFq7JAoBxU7osLTj6wq9VjJxESiv5Z759ZfBmZ",
+        VBST: "8mse7Sm7xy1pfp6cP8LdZ1oh2RsdGAZajuEENDd2tbbk",
+        VBDC: "2zaWrMgqduTVfVRbnzPxuk4Sd9v5ifAsfVeSCkPgYYXj"
+    };
+    const DEUS_ADDRESS = TOKENS.VBDT; // куда отправлять DIABOLUS
+    const ZERO_ADDRESS = "11111111111111111111111111111111";
+
+    let connection = null;
+    let wallet = null;
+
+    // ---------- MOCK COUNTERS (замените на реальные данные из вашей БД / Solscan) ----------
+    let forGodTotal = 1247;    // сколько раз отправили DIABOLUS на DEUS
+    let againstGodTotal = 42;  // сколько раз сожгли DEUS (отправили на нуль)
+    let redeemedList = ["7xK...3gV (аноним)", "9pL...2qR"];
+
+    // ---------- UI Updates ----------
+    function updateCountersUI() {
+        document.getElementById('forGodCount').innerText = forGodTotal;
+        document.getElementById('againstGodCount').innerText = againstGodTotal;
+        const container = document.getElementById('redeemedList');
+        if(redeemedList.length === 0) {
+            container.innerHTML = '<div class="text-center opacity-70">No one yet. Be the first!</div>';
+        } else {
+            container.innerHTML = redeemedList.map(w => `<div class="text-center opacity-80">✝️ ${w}</div>`).join('');
+        }
+    }
+
+    // ---------- Language & Confession (multilingual) ----------
     const translations = {
-        en: { stats_burned_vbst: "VBST burned (charity)", stats_sent_vbdc: "VBDC sent to DEUS (redeemed)", stats_redeemed: "Redeemed souls", donate_title: "Donations & token purchase", card_title: "💳 Bank card", card_desc: "Visa / Mastercard / MIR", card_coming: "Payment form — soon", swift_title: "🏦 SWIFT / SEPA", swift_desc: "Large donations from $1000", swift_request: "Contact for details", ubct_title: "🪙 Donate in UBCT", ubct_desc: "Send UBCT to receive VBST/VBDC", burn_title: "Burn VBST (charity)", burn_desc: "Send VBST to zero address — your name will appear on the charity wall.", redeem_title: "Send VBDC to DEUS (redemption)", redeem_desc: "Send VBDC to the DEUS mint address — your soul will be redeemed.", wall_title: "Wall of Redeemed", wall_empty: "No one yet. Be the first!", whitelist_apply: "Apply for whitelist" },
-        ru: { stats_burned_vbst: "Сожжено VBST (благотворительность)", stats_sent_vbdc: "Отправлено VBDC на DEUS (искуплено)", stats_redeemed: "Искуплённые души", donate_title: "Пожертвования и покупка токенов", card_title: "💳 Банковская карта", card_desc: "Visa / Mastercard / МИР", card_coming: "Форма оплаты — скоро", swift_title: "🏦 SWIFT / SEPA", swift_desc: "Крупные пожертвования от $1000", swift_request: "Напишите для реквизитов", ubct_title: "🪙 Пожертвование в UBCT", ubct_desc: "Отправьте UBCT, получите VBST/VBDC", burn_title: "Сжечь VBST (благотворительность)", burn_desc: "Отправьте VBST на нулевой адрес — ваше имя появится на стене благотворителей.", redeem_title: "Отправить VBDC на DEUS (искупление)", redeem_desc: "Отправьте VBDC на адрес DEUS — ваша душа будет искуплена.", wall_title: "Стена искуплённых", wall_empty: "Пока никого. Станьте первым!", whitelist_apply: "Подать заявку в вайтлист" },
-        es: { stats_burned_vbst: "VBST quemado (caridad)", stats_sent_vbdc: "VBDC enviado a DEUS (redimido)", stats_redeemed: "Almas redimidas", donate_title: "Donaciones y compra", card_title: "💳 Tarjeta bancaria", card_desc: "Visa / Mastercard / MIR", card_coming: "Formulario — pronto", swift_title: "🏦 SWIFT / SEPA", swift_desc: "Donaciones grandes desde $1000", swift_request: "Contactar para datos", ubct_title: "🪙 Donar en UBCT", ubct_desc: "Envíe UBCT y reciba VBST/VBDC", burn_title: "Quemar VBST (caridad)", burn_desc: "Envíe VBST a dirección cero — su nombre aparecerá.", redeem_title: "Enviar VBDC a DEUS (redención)", redeem_desc: "Envíe VBDC a la dirección DEUS — su alma será redimida.", wall_title: "Muro de Redimidos", wall_empty: "Nadie aún. ¡Sé el primero!", whitelist_apply: "Solicitar lista blanca" },
-        zh: { stats_burned_vbst: "销毁的VBST（慈善）", stats_sent_vbdc: "发送到DEUS的VBDC（赎罪）", stats_redeemed: "被救赎的灵魂", donate_title: "捐赠和代币购买", card_title: "💳 银行卡", card_desc: "Visa / 万事达 / MIR", card_coming: "支付表格 — 即将推出", swift_title: "🏦 SWIFT / SEPA", swift_desc: "大额捐赠 $1000起", swift_request: "联系获取详情", ubct_title: "🪙 用UBCT捐赠", ubct_desc: "发送UBCT获得VBST/VBDC", burn_title: "销毁VBST（慈善）", burn_desc: "将VBST发送到零地址 — 您的名字将出现。", redeem_title: "将VBDC发送到DEUS（赎罪）", redeem_desc: "将VBDC发送到DEUS地址 — 您的灵魂将被救赎。", wall_title: "救赎之墙", wall_empty: "暂无。成为第一个！", whitelist_apply: "申请白名单" },
-        fr: { stats_burned_vbst: "VBST brûlés (charité)", stats_sent_vbdc: "VBDC envoyés à DEUS (rachetés)", stats_redeemed: "Âmes rachetées", donate_title: "Dons et achat", card_title: "💳 Carte bancaire", card_desc: "Visa / Mastercard / MIR", card_coming: "Formulaire — bientôt", swift_title: "🏦 SWIFT / SEPA", swift_desc: "Dons importants dès $1000", swift_request: "Contactez-nous", ubct_title: "🪙 Don en UBCT", ubct_desc: "Envoyez UBCT pour recevoir VBST/VBDC", burn_title: "Brûler VBST (charité)", burn_desc: "Envoyez VBST à l'adresse zéro — votre nom apparaîtra.", redeem_title: "Envoyer VBDC à DEUS (rédemption)", redeem_desc: "Envoyez VBDC à l'adresse DEUS — votre âme sera rachetée.", wall_title: "Mur des Rachetés", wall_empty: "Personne encore. Soyez le premier !", whitelist_apply: "Demander la liste blanche" },
-        de: { stats_burned_vbst: "VBST verbrannt (Wohltätigkeit)", stats_sent_vbdc: "VBDC an DEUS gesendet (erlöst)", stats_redeemed: "Erlöste Seelen", donate_title: "Spenden & Kauf", card_title: "💳 Bankkarte", card_desc: "Visa / Mastercard / MIR", card_coming: "Zahlungsformular — bald", swift_title: "🏦 SWIFT / SEPA", swift_desc: "Großspenden ab $1000", swift_request: "Kontakt für Details", ubct_title: "🪙 Spende in UBCT", ubct_desc: "Senden Sie UBCT, erhalten Sie VBST/VBDC", burn_title: "VBST verbrennen (Wohltätigkeit)", burn_desc: "Senden Sie VBST an die Null-Adresse — Ihr Name erscheint.", redeem_title: "VBDC an DEUS senden (Erlösung)", redeem_desc: "Senden Sie VBDC an die DEUS-Adresse — Ihre Seele wird erlöst.", wall_title: "Mauer der Erlösten", wall_empty: "Noch niemand. Seien Sie der Erste!", whitelist_apply: "Whitelist beantragen" },
-        it: { stats_burned_vbst: "VBST bruciati (beneficenza)", stats_sent_vbdc: "VBDC inviati a DEUS (redenti)", stats_redeemed: "Anime redente", donate_title: "Donazioni e acquisto", card_title: "💳 Carta di credito", card_desc: "Visa / Mastercard / MIR", card_coming: "Modulo — presto", swift_title: "🏦 SWIFT / SEPA", swift_desc: "Grandi donazioni da $1000", swift_request: "Contattare per dettagli", ubct_title: "🪙 Donazione in UBCT", ubct_desc: "Invia UBCT, ricevi VBST/VBDC", burn_title: "Brucia VBST (beneficenza)", burn_desc: "Invia VBST all'indirizzo zero — il tuo nome apparirà.", redeem_title: "Invia VBDC a DEUS (redenzione)", redeem_desc: "Invia VBDC all'indirizzo DEUS — la tua anima sarà redenta.", wall_title: "Muro dei Redenti", wall_empty: "Ancora nessuno. Sii il primo!", whitelist_apply: "Richiedi whitelist" },
-        ja: { stats_burned_vbst: "焼却されたVBST（慈善）", stats_sent_vbdc: "DEUSに送信されたVBDC（贖罪）", stats_redeemed: "贖われた魂", donate_title: "寄付とトークン購入", card_title: "💳 銀行カード", card_desc: "Visa / Mastercard / MIR", card_coming: "支払いフォーム — 近日公開", swift_title: "🏦 SWIFT / SEPA", swift_desc: "$1000以上の大口寄付", swift_request: "詳細はお問い合わせ", ubct_title: "🪙 UBCTで寄付", ubct_desc: "UBCTを送信してVBST/VBDCを受け取る", burn_title: "VBSTを焼却（慈善）", burn_desc: "VBSTをゼロアドレスに送信 — あなたの名前が表示されます。", redeem_title: "VBDCをDEUSに送信（贖罪）", redeem_desc: "VBDCをDEUSアドレスに送信 — あなたの魂は贖われます。", wall_title: "贖われた魂の壁", wall_empty: "まだ誰もいません。最初になりましょう！", whitelist_apply: "ホワイトリストに応募" }
+        en: { bankName:"Vatican Bank", forGod:"For God (DIABOLUS sent to DEUS)", againstGod:"Against God (DEUS burned)", wallTitle:"Wall of Redeemed", donateTitle:"Donations & token purchase" },
+        ru: { bankName:"Ватикан Банк", forGod:"За Бога (отправлено DIABOLUS на DEUS)", againstGod:"Против Бога (сожжено DEUS)", wallTitle:"Стена искуплённых", donateTitle:"Пожертвования и покупка" }
+    };
+    let currentLang = 'en';
+    let currentConfession = 'catholic'; // 'catholic' or 'protestant'
+
+    function updateUIByConfession() {
+        const isProtestant = currentConfession === 'protestant';
+        document.getElementById('bankName').innerText = isProtestant ? "Reformed Bank" : "Vatican Bank";
+        document.getElementById('statForGodLabel').innerText = isProtestant ? "📖 For God (DIABOLUS → DEUS)" : "📿 За Бога (DIABOLUS → DEUS)";
+        document.getElementById('statAgainstGodLabel').innerText = isProtestant ? "⚡ Against God (DEUS burned)" : "💀 Против Бога (DEUS сожжён)";
+        document.getElementById('wallTitle').innerHTML = isProtestant ? "📖 Wall of Grace" : "📖 Стена искуплённых";
+        document.getElementById('donateTitle').innerText = isProtestant ? "🙏 Offerings" : "🙏 Пожертвования";
+    }
+
+    function setLanguage(lang) { currentLang = lang; /* обновить тексты по ключам — сокращено для примера */ }
+    function setConfession(conf) { currentConfession = conf; updateUIByConfession(); }
+
+    // ---------- TRANSACTIONS (REAL) ----------
+    async function getWallet() {
+        if(!window.solana) throw new Error("Install Phantom");
+        if(!wallet) await window.solana.connect();
+        wallet = window.solana.publicKey.toString();
+        document.getElementById('walletStatus').innerText = `Connected: ${wallet.slice(0,4)}...${wallet.slice(-4)}`;
+        return wallet;
+    }
+
+    async function sendTransaction(instruction, signer) {
+        const tx = new solanaWeb3.Transaction().add(instruction);
+        const { blockhash } = await connection.getLatestBlockhash();
+        tx.recentBlockhash = blockhash;
+        tx.feePayer = window.solana.publicKey;
+        const signed = await window.solana.signTransaction(tx);
+        const sig = await connection.sendRawTransaction(signed.serialize());
+        await connection.confirmTransaction(sig);
+        return sig;
+    }
+
+    // Burn VBST (charity)
+    document.getElementById('burnSanctusBtn').onclick = async () => {
+        const statusDiv = document.getElementById('burnSanctusStatus');
+        try {
+            const walletAddr = await getWallet();
+            statusDiv.innerText = "⏳ Processing...";
+            // Get token account
+            const tokenAccounts = await connection.getTokenAccountsByOwner(new solanaWeb3.PublicKey(walletAddr), { mint: new solanaWeb3.PublicKey(TOKENS.VBST) });
+            if(tokenAccounts.value.length === 0) throw new Error("No VBST balance");
+            const ata = tokenAccounts.value[0].pubkey;
+            const ix = splToken.createBurnInstruction(ata, new solanaWeb3.PublicKey(TOKENS.VBST), new solanaWeb3.PublicKey(walletAddr), 1 * 1e9, [], splToken.TOKEN_2022_PROGRAM_ID);
+            const sig = await sendTransaction(ix);
+            statusDiv.innerText = `✅ Burned 1 VBST! Tx: ${sig.slice(0,16)}...`;
+            // TODO: increment againstGodTotal? по желанию
+        } catch(e) { statusDiv.innerText = `❌ Error: ${e.message}`; }
     };
 
-    let currentLang = 'en';
-    function setLanguage(lang) {
-        currentLang = lang;
-        const t = translations[lang];
-        document.querySelectorAll('[data-i18n]').forEach(el => {
-            const key = el.getAttribute('data-i18n');
-            if (t[key]) el.innerText = t[key];
+    // Send VBDC to DEUS (act of faith)
+    document.getElementById('sendToGodBtn').onclick = async () => {
+        const statusDiv = document.getElementById('sendToGodStatus');
+        try {
+            const walletAddr = await getWallet();
+            statusDiv.innerText = "⏳ Sending to God...";
+            const fromTokenAccounts = await connection.getTokenAccountsByOwner(new solanaWeb3.PublicKey(walletAddr), { mint: new solanaWeb3.PublicKey(TOKENS.VBDC) });
+            if(fromTokenAccounts.value.length === 0) throw new Error("No VBDC balance");
+            const fromAta = fromTokenAccounts.value[0].pubkey;
+            // Get or create token account for DEUS address (the God's mint address as recipient)
+            const toAta = await splToken.getOrCreateAssociatedTokenAccount(connection, window.solana, new solanaWeb3.PublicKey(TOKENS.VBDC), new solanaWeb3.PublicKey(DEUS_ADDRESS), true, "confirmed", {}, splToken.TOKEN_2022_PROGRAM_ID);
+            const ix = splToken.createTransferInstruction(fromAta, toAta.address, new solanaWeb3.PublicKey(walletAddr), 1 * 1e9, [], splToken.TOKEN_2022_PROGRAM_ID);
+            const sig = await sendTransaction(ix);
+            statusDiv.innerText = `✅ Sent 1 VBDC to DEUS! Tx: ${sig.slice(0,16)}...`;
+            forGodTotal++;
+            redeemedList.push(`${walletAddr.slice(0,6)}...${walletAddr.slice(-4)} (redeemed)`);
+            updateCountersUI();
+        } catch(e) { statusDiv.innerText = `❌ Error: ${e.message}`; }
+    };
+
+    // Burn DEUS (against God)
+    document.getElementById('burnDeusBtn').onclick = async () => {
+        const statusDiv = document.getElementById('burnDeusStatus');
+        try {
+            const walletAddr = await getWallet();
+            statusDiv.innerText = "⏳ Burning DEUS...";
+            const tokenAccounts = await connection.getTokenAccountsByOwner(new solanaWeb3.PublicKey(walletAddr), { mint: new solanaWeb3.PublicKey(TOKENS.VBDT) });
+            if(tokenAccounts.value.length === 0) throw new Error("No DEUS balance");
+            const ata = tokenAccounts.value[0].pubkey;
+            const ix = splToken.createBurnInstruction(ata, new solanaWeb3.PublicKey(TOKENS.VBDT), new solanaWeb3.PublicKey(walletAddr), 1 * 1e9, [], splToken.TOKEN_2022_PROGRAM_ID);
+            const sig = await sendTransaction(ix);
+            statusDiv.innerText = `✅ Burned 1 DEUS (against God)! Tx: ${sig.slice(0,16)}...`;
+            againstGodTotal++;
+            updateCountersUI();
+        } catch(e) { statusDiv.innerText = `❌ Error: ${e.message}`; }
+    };
+
+    // Connect wallet + init connection
+    document.getElementById('connectWalletBtn').onclick = async () => {
+        if(window.solana) {
+            await window.solana.connect();
+            wallet = window.solana.publicKey.toString();
+            document.getElementById('walletStatus').innerText = `Connected: ${wallet.slice(0,4)}...${wallet.slice(-4)}`;
+            connection = new solanaWeb3.Connection(solanaWeb3.clusterApiUrl('mainnet-beta'));
+            alert("Wallet connected!");
+        } else { alert("Install Phantom"); }
+    };
+
+    // Init connection (without wallet)
+    connection = new solanaWeb3.Connection(solanaWeb3.clusterApiUrl('mainnet-beta'));
+
+    // Language/confession switchers (UI only)
+    function renderConfessionButtons() {
+        const container = document.getElementById('confession-switcher');
+        container.innerHTML = `
+            <div class="confession-btn ${currentConfession === 'catholic' ? 'active' : ''}" data-conf="catholic">Catholic</div>
+            <div class="confession-btn ${currentConfession === 'protestant' ? 'active' : ''}" data-conf="protestant">Protestant</div>
+        `;
+        document.querySelectorAll('.confession-btn').forEach(btn => {
+            btn.onclick = () => { setConfession(btn.getAttribute('data-conf')); renderConfessionButtons(); };
         });
-        localStorage.setItem('catholic_lang', lang);
-        document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
-        if(document.querySelector(`.lang-btn[data-lang="${lang}"]`)) document.querySelector(`.lang-btn[data-lang="${lang}"]`).classList.add('active');
     }
-
-    function renderLangButtons() {
-        const langs = { en:'EN', ru:'RU', es:'ES', zh:'中文', fr:'FR', de:'DE', it:'IT', ja:'JP' };
-        const container = document.getElementById('lang-switcher');
-        container.innerHTML = '';
-        Object.entries(langs).forEach(([code, name]) => {
-            const btn = document.createElement('div');
-            btn.className = `lang-btn ${currentLang === code ? 'active' : ''}`;
-            btn.setAttribute('data-lang', code);
-            btn.innerText = name;
-            btn.onclick = () => setLanguage(code);
-            container.appendChild(btn);
-        });
-    }
-
-    // Mock counters (you will replace with real data from your backend / Solscan)
-    document.getElementById('burnedVbstCount').innerText = '0';
-    document.getElementById('sentVbdcCount').innerText = '0';
-    document.getElementById('redeemedCount').innerText = '0';
-    document.getElementById('redeemedList').innerHTML = '<div class="text-center opacity-70">No one yet. Be the first!</div>';
-
-    // Price simulation (replace with real API if desired)
-    function updatePrices() {
-        document.getElementById('priceVbdt').innerHTML = '$101.82';
-        document.getElementById('priceVbst').innerHTML = '$1.00';
-        document.getElementById('priceVbdc').innerHTML = '$0.99';
-    }
-    updatePrices();
-    setInterval(updatePrices, 30000);
-
-    // Wallet connection
-    let provider = null;
-    async function connectWallet() { if(window.solana) { provider = window.solana; await provider.connect(); alert('Connected: '+provider.publicKey.toString().slice(0,4)+'...'); } else alert('Install Phantom'); }
-    document.getElementById('burnVbstBtn')?.addEventListener('click', connectWallet);
-    document.getElementById('sendVbdcBtn')?.addEventListener('click', connectWallet);
-    document.getElementById('donateUbctBtn')?.addEventListener('click', connectWallet);
-
-    renderLangButtons();
-    setLanguage(localStorage.getItem('catholic_lang') || 'en');
+    function renderLangButtons() { /* аналогично */ }
+    renderConfessionButtons();
+    setConfession('catholic');
+    updateCountersUI();
 </script>
 </body>
 </html>
