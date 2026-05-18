@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Saints Gallery</title><script src="https://cdn.tailwindcss.com"></script><style>body{background:radial-gradient(circle at 10%20%,#1A1510,#0D0A07);color:#F5E6D3;}.glass{background:rgba(44,36,24,0.75);border-radius:24px;padding:1.5rem;}.saint-card{transition:0.2s;}.saint-card:hover{transform:translateY(-5px);}</style></head>
+<body class="p-4"><div class="max-w-5xl mx-auto"><div class="flex justify-between items-center mb-6"><h1 class="text-3xl font-bold">👼 Saints Gallery</h1><a href="index.html" class="bg-white/10 px-4 py-2 rounded-full text-sm">← Back</a></div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="saintsList"></div></div>
+<script>const saints=[
+    {name:"St. Peter",feast:"June 29",icon:"🔑",mint:"VBDT"},
+    {name:"St. Francis",feast:"October 4",icon:"🕊️",mint:"VBST"},
+    {name:"St. Michael",feast:"September 29",icon:"⚔️",mint:"VBDC"},
+    {name:"St. Clare",feast:"August 11",icon:"✝️",mint:"VBST"},
+    {name:"St. Joseph",feast:"March 19",icon:"🪚",mint:"VBDT"},
+    {name:"St. Theresa",feast:"October 1",icon:"🌹",mint:"VBST"}
+];
+let collected=JSON.parse(localStorage.getItem('collectedSaints')||'[]');
+function render(){let container=document.getElementById('saintsList');container.innerHTML=saints.map(s=>{let owned=collected.includes(s.name);return `<div class="glass p-4 text-center saint-card"><div class="text-5xl mb-2">${s.icon}</div><div class="font-bold text-xl">${s.name}</div><div class="text-sm opacity-70">Feast: ${s.feast}</div><div class="mt-2">${owned?'✅ Collected':'❌ Not collected'}</div>${!owned?`<button class="collectBtn mt-3 btn-primary px-3 py-1 text-sm rounded-full" data-name="${s.name}" data-mint="${s.mint}">Get NFT Icon (send 1 ${s.mint})</button>`:''}</div>`}).join('');
+    document.querySelectorAll('.collectBtn').forEach(btn=>btn.onclick=()=>{let name=btn.dataset.name;let mint=btn.dataset.mint;alert(`Send 1 ${mint} to DEUS address, then verify TXID on main page. After verification, this saint will be added to your collection.`);});}
+render();</script></body></html>
