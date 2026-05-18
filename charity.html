@@ -1,28 +1,10 @@
 <!DOCTYPE html>
 <html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Благотворительность · Chain Bank</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>body{background:radial-gradient(circle at 10%20%,#0B132B,#070C1A);color:white;font-family:sans-serif;}.glass{background:rgba(255,255,255,0.05);backdrop-filter:blur(16px);border-radius:2rem;padding:1.5rem;margin-bottom:1.5rem;}.btn{padding:0.7rem 1.2rem;border-radius:2rem;font-weight:600;cursor:pointer;display:inline-block;text-align:center;background:rgba(255,255,255,0.1);}.btn-primary{background:linear-gradient(90deg,#C5A059,#FFDF85);color:#0B132B;}</style>
-</head>
-<body class="p-4">
-<div class="max-w-3xl mx-auto">
-    <div class="flex justify-between items-center mb-6"><h1 class="text-3xl font-bold">🤝 Благотворительность</h1><a href="index.html" class="btn">← На главную</a></div>
-    <div class="glass"><h2 class="text-xl font-bold mb-3">🙏 Текущие сборы</h2><div id="charityList"></div></div>
-    <div class="glass"><h2 class="text-xl font-bold mb-3">➕ Создать сбор</h2><input type="text" id="charityName" placeholder="Название (например: Помощь детскому дому)" class="w-full p-2 rounded bg-black/50 border mb-2"><input type="text" id="charityGoal" placeholder="Цель в USD" class="w-full p-2 rounded bg-black/50 border mb-2"><button id="addCharityBtn" class="btn-primary w-full py-2 rounded-full">Создать сбор</button></div>
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Chain Bank - Благотворительность</title><script src="https://cdn.tailwindcss.com"></script><script src="lang.js"></script><link href="style.css" rel="stylesheet"></head>
+<body class="p-4"><div class="max-w-3xl mx-auto">
+<div class="flex flex-wrap justify-between items-center gap-3 mb-6 pb-3 border-b border-gold/30"><h1 class="text-3xl font-bold" style="font-family:'Cormorant Garamond',serif; color:#FFDF85;" data-i18n="charity">Благотворительность</h1><div class="flex gap-2"><div id="lang-switcher" class="flex gap-1"></div><a href="index.html" class="btn-secondary px-4 py-2 rounded-full text-sm" data-i18n="back">← На главную</a></div></div>
+<div class="glass p-6 mb-6"><h2 class="text-xl font-bold mb-3" data-i18n="active">📋 Активные сборы</h2><div id="charityList"></div></div>
+<div class="glass p-6"><h2 class="text-xl font-bold mb-3" data-i18n="create">➕ Создать сбор</h2><input type="text" id="charityName" class="w-full p-2 rounded bg-black/50 border border-gold/30 mb-2" data-i18n-placeholder="charity_name"><input type="text" id="charityGoal" class="w-full p-2 rounded bg-black/50 border border-gold/30 mb-2" data-i18n-placeholder="charity_goal"><button id="addCharityBtn" class="btn-primary w-full py-2 rounded-full" data-i18n="create_btn">Создать сбор</button></div>
 </div>
-<script>
-    let charities = JSON.parse(localStorage.getItem('charities') || '[{"name":"Помощь храму","goal":5000,"raised":1200},{"name":"Детский дом","goal":3000,"raised":450}]');
-    function render() {
-        const container = document.getElementById('charityList');
-        if(charities.length===0){container.innerHTML='<div class="opacity-60">Нет активных сборов</div>';return;}
-        container.innerHTML=charities.map(c=>`<div class="mb-3 p-3 rounded bg-black/30"><div class="font-bold">${c.name}</div><div>💰 Собрано: $${c.raised} из $${c.goal}</div><div class="w-full bg-gray-700 rounded-full h-2 mt-1"><div class="bg-green-500 h-2 rounded-full" style="width:${(c.raised/c.goal)*100}%"></div></div><button class="donateBtn mt-2 btn-primary px-3 py-1 text-sm rounded-full" data-name="${c.name}">Пожертвовать</button></div>`).join('');
-        document.querySelectorAll('.donateBtn').forEach(btn=>btn.onclick=()=>{let name=btn.dataset.name;let amount=prompt('Сумма пожертвования в USD (можно криптой)');if(amount){let idx=charities.findIndex(c=>c.name===name);if(idx!==-1){charities[idx].raised+=Number(amount);localStorage.setItem('charities',JSON.stringify(charities));render();alert('Спасибо за пожертвование!');}}});
-    }
-    document.getElementById('addCharityBtn').onclick=()=>{let name=document.getElementById('charityName').value.trim();let goal=Number(document.getElementById('charityGoal').value);if(!name||!goal)return;charities.push({name,goal,raised:0});localStorage.setItem('charities',JSON.stringify(charities));render();document.getElementById('charityName').value='';document.getElementById('charityGoal').value='';};
-    render();
-</script>
-</body>
-</html>
+<script>let charities=JSON.parse(localStorage.getItem('charities')||'[{"name":"Help Church","goal":5000,"raised":1201},{"name":"Orphanage","goal":3000,"raised":450}]');function render(){let container=document.getElementById('charityList');if(charities.length===0){container.innerHTML='<div class="opacity-60 text-center" data-i18n="no_funds">Нет активных сборов</div>';return;}container.innerHTML=charities.map(c=>`<div class="mb-3 p-3 rounded bg-black/30 border border-gold/30"><div class="font-bold">${c.name}</div><div>💰 ${c.raised} / ${c.goal} USD</div><div class="w-full bg-gray-700 rounded-full h-2 mt-1"><div class="bg-green-500 h-2 rounded-full" style="width:${(c.raised/c.goal)*100}%"></div></div><button class="donateBtn mt-2 btn-primary px-3 py-1 text-sm rounded-full" data-name="${c.name}" data-i18n="donate_btn">🤝 Пожертвовать</button></div>`).join('');document.querySelectorAll('.donateBtn').forEach(btn=>btn.onclick=()=>{let name=btn.dataset.name;let amount=prompt(translations[currentLang]?.enter_amount||'Сумма в USD');if(amount){let idx=charities.findIndex(c=>c.name===name);if(idx!==-1){charities[idx].raised+=Number(amount);localStorage.setItem('charities',JSON.stringify(charities));render();alert(translations[currentLang]?.saved||'Спасибо!');}}});}
+document.getElementById('addCharityBtn').onclick=()=>{let name=document.getElementById('charityName').value.trim();let goal=Number(document.getElementById('charityGoal').value);if(!name||!goal)return;charities.push({name,goal,raised:0});localStorage.setItem('charities',JSON.stringify(charities));render();document.getElementById('charityName').value='';document.getElementById('charityGoal').value='';alert(translations[currentLang]?.saved||'Сбор создан');};render();</script></body></html>
