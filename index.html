@@ -2,127 +2,162 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chain Bank · VBDT · VBST · VBDC</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body { font-family: 'Inter', sans-serif; background: radial-gradient(circle at 10% 20%, #0B132B, #070C1A); color: white; }
-        .glass { background: rgba(255,255,255,0.05); backdrop-filter: blur(16px); border: 1px solid rgba(255,255,255,0.1); border-radius: 2rem; }
-        .btn { padding: 0.7rem 1.2rem; border-radius: 2rem; font-weight: 600; transition: all 0.2s; cursor: pointer; display: inline-block; text-align: center; }
+        body { background: radial-gradient(circle at 10% 20%, #0B132B, #070C1A); color: white; font-family: sans-serif; }
+        .glass { background: rgba(255,255,255,0.05); backdrop-filter: blur(16px); border-radius: 2rem; padding: 1.5rem; margin-bottom: 1.5rem; }
+        .btn { padding: 0.7rem 1.2rem; border-radius: 2rem; font-weight: 600; cursor: pointer; display: inline-block; text-align: center; background: rgba(255,255,255,0.1); }
         .btn-primary { background: linear-gradient(90deg, #C5A059, #FFDF85); color: #0B132B; }
-        .btn-secondary { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); }
-        .btn-danger { background: rgba(220,38,38,0.8); }
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(8px); justify-content: center; align-items: center; z-index: 1000; }
-        .modal-content { max-width: 500px; width: 90%; background: #0B132B; border-radius: 2rem; padding: 1.5rem; }
-        .address-box { background: #00000066; padding: 0.5rem; border-radius: 1rem; font-family: monospace; word-break: break-all; font-size: 0.8rem; }
-        .copy-btn { background: #C5A059; color: #0B132B; padding: 0.25rem 0.75rem; border-radius: 1rem; font-size: 0.7rem; margin-left: 0.5rem; cursor: pointer; display: inline-block; }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); justify-content: center; align-items: center; z-index: 1000; }
+        .modal-content { background: #0B132B; border-radius: 2rem; padding: 1.5rem; max-width: 500px; width: 90%; }
     </style>
 </head>
-<body class="p-4 md:p-6">
+<body class="p-4">
 
-<div class="max-w-7xl mx-auto">
-    <div class="flex flex-wrap justify-between items-center gap-3 mb-6">
-        <div class="flex items-center gap-3"><div class="w-10 h-10 rounded-full bg-gradient-to-br from-yellow-500 to-amber-600"></div><span class="text-2xl font-bold">Chain Bank</span></div>
-        <div class="flex gap-2"><button id="whitepaperBtn" class="btn-secondary px-3 py-1 text-xs rounded-full">📄 Whitepaper</button><button id="whitelistBtn" class="btn-secondary px-3 py-1 text-xs rounded-full">✍️ Whitelist</button></div>
+<div class="max-w-3xl mx-auto">
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-3xl font-bold">Chain Bank</h1>
+        <a href="candles.html" class="btn">🕯️ Свечи</a>
     </div>
 
-    <!-- Счётчики -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-        <div class="glass p-4 text-center"><div class="text-sm opacity-70">📿 За Бога (отправлено VBDC на DEUS)</div><div class="text-2xl font-bold text-green-400" id="forGodCount">1247</div></div>
-        <div class="glass p-4 text-center"><div class="text-sm opacity-70">💀 Против Бога (сожжено DEUS или VBST)</div><div class="text-2xl font-bold text-red-400" id="againstGodCount">42</div></div>
+    <!-- Форма для имени и кошелька -->
+    <div class="glass">
+        <h2 class="text-xl font-bold mb-3">👤 Ваши данные для свечей</h2>
+        <input type="text" id="userWallet" placeholder="Ваш Solana кошелёк (обязательно)" class="w-full p-2 rounded bg-black/50 border mb-2">
+        <input type="text" id="userName" placeholder="Ваше имя (будет на свече)" class="w-full p-2 rounded bg-black/50 border mb-2">
+        <button id="saveDataBtn" class="btn-primary w-full py-2 rounded-full">Сохранить</button>
     </div>
 
-    <!-- Токены -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-        <!-- DEUS -->
-        <div class="glass p-5 text-center">
-            <img src="https://raw.githubusercontent.com/byt-assist/catholic-chainbank/refs/heads/main/deus.png" class="w-20 h-20 mx-auto mb-3 rounded-full border-2 border-yellow-500/50">
-            <h2 class="text-xl font-bold">VBDT (DEUS)</h2>
-            <div class="text-2xl font-bold mt-2">$101.82</div>
-            <div class="mt-4 space-y-2">
-                <a href="https://app.meteora.ag/pool/enumCPSnPzkWwm5Xn7MucPBdXcn8DdoYyr1Srwr8KSh" target="_blank" class="btn btn-primary w-full block">💰 Купить на Meteora</a>
-                <button id="showBurnDeusBtn" class="btn-danger w-full py-2 rounded-full text-sm">💀 Сжечь DEUS (против Бога)</button>
-            </div>
-        </div>
-        <!-- SANCTUS -->
-        <div class="glass p-5 text-center">
-            <img src="https://raw.githubusercontent.com/byt-assist/catholic-chainbank/refs/heads/main/sanctus.png" class="w-20 h-20 mx-auto mb-3 rounded-full border-2 border-blue-500/50">
-            <h2 class="text-xl font-bold">VBST (SANCTUS)</h2>
-            <div class="text-2xl font-bold mt-2">$1.00</div>
-            <div class="mt-4 space-y-2">
-                <a href="https://app.meteora.ag/pool/2adyu61MPcoGz7Jv6PFZTcqeK43k1kbqt32Yxu5i3sSt" target="_blank" class="btn btn-primary w-full block">💰 Купить на Meteora</a>
-                <button id="showBurnVbstBtn" class="btn-secondary w-full py-2 rounded-full text-sm">🕯️ Сжечь VBST (свеча)</button>
-                <button id="showEternalBtn" class="btn-primary w-full py-2 rounded-full text-sm">✨ Вечная свеча (1 VBST + 1 VBDC)</button>
-            </div>
-        </div>
-        <!-- DIABOLUS -->
-        <div class="glass p-5 text-center">
-            <img src="https://raw.githubusercontent.com/byt-assist/catholic-chainbank/refs/heads/main/diabolus.png" class="w-20 h-20 mx-auto mb-3 rounded-full border-2 border-red-500/50">
-            <h2 class="text-xl font-bold">VBDC (DIABOLUS)</h2>
-            <div class="text-2xl font-bold mt-2">$0.99</div>
-            <div class="mt-4 space-y-2">
-                <a href="https://app.meteora.ag/pool/8VBBurpkCtn8jsvUMh95sFgrzVa5pxzKiDd48amykUeA" target="_blank" class="btn btn-primary w-full block">💰 Купить на Meteora</a>
-                <button id="showSendToDeusBtn" class="btn-primary w-full py-2 rounded-full text-sm">✝️ Отправить VBDC на DEUS (За Бога)</button>
-            </div>
+    <!-- Кнопки действий -->
+    <div class="glass">
+        <h2 class="text-xl font-bold mb-3">🔥 Выберите действие</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+            <button id="forGodBtn" class="btn-primary py-2 rounded-full">📿 За Бога (1 VBDC → DEUS)</button>
+            <button id="againstGodBtn" class="btn-danger py-2 rounded-full" style="background:#b91c1c;">💀 Против Бога (1 DEUS → DIABOLUS)</button>
+            <button id="eternalBtn" class="btn-primary py-2 rounded-full">✨ Вечная свеча (1 VBST + 1 VBDC → DEUS)</button>
         </div>
     </div>
 
-    <!-- Стена искуплённых -->
-    <div class="glass p-6 mb-8">
-        <h3 class="text-xl font-bold mb-3 text-center">📖 Стена искуплённых (отправившие VBDC на DEUS)</h3>
-        <div class="max-h-48 overflow-y-auto space-y-1 font-mono text-xs" id="redeemedList"><div class="text-center opacity-70">Пока никого. Станьте первым!</div></div>
-    </div>
-
-    <div class="glass p-5 text-sm opacity-70 text-center">
-        ⚡ Как это работает: нажмите на нужное действие → откроется окно с адресом, куда отправить токены. Вы отправляете ровно указанное количество с вашего кошелька. После отправки транзакция появляется в блокчейне. Мы обновляем счётчики и стену искуплённых вручную.
+    <!-- Форма для ввода TXID -->
+    <div class="glass" id="txidForm" style="display: none;">
+        <h2 class="text-xl font-bold mb-3">🔍 Подтверждение</h2>
+        <p id="txActionDesc" class="text-sm mb-2"></p>
+        <input type="text" id="txidInput" placeholder="Вставьте TXID (хеш транзакции)" class="w-full p-2 rounded bg-black/50 border mb-2">
+        <button id="verifyBtn" class="btn-primary w-full py-2 rounded-full">Проверить и добавить свечу</button>
+        <div id="verifyStatus" class="text-sm mt-2"></div>
     </div>
 </div>
-
-<!-- Модальное окно для адреса -->
-<div id="addressModal" class="modal">
-    <div class="modal-content">
-        <button class="float-right text-2xl close-modal" id="closeModalBtn">&times;</button>
-        <h3 class="text-xl font-bold mb-3" id="modalTitle">Отправить токены</h3>
-        <p id="modalDesc" class="text-sm mb-2">Отправьте точно указанное количество на этот адрес:</p>
-        <div class="address-box mb-3" id="modalAddress">Адрес</div>
-        <button id="copyAddressBtn" class="copy-btn">📋 Копировать адрес</button>
-        <p class="text-xs opacity-60 mt-3">Количество: 1 токен (1 000 000 000 с учётом decimals). Используйте стандартный перевод в вашем кошельке Phantom.</p>
-    </div>
-</div>
-
-<!-- Модалки -->
-<div id="whitepaperModal" class="modal"><div class="modal-content"><button class="float-right text-2xl close-modal">&times;</button><h2 class="text-2xl font-bold mb-4">📄 Whitepaper</h2><p><strong>VBDT (DEUS):</strong> Divine token, 10B supply.</p><p><strong>VBST (SANCTUS):</strong> Charity token, burn for candles.</p><p><strong>VBDC (DIABOLUS):</strong> Send to DEUS address to be redeemed.</p></div></div>
-<div id="whitelistModal" class="modal"><div class="modal-content"><button class="float-right text-2xl close-modal">&times;</button><h2 class="text-2xl font-bold mb-4">✍️ Whitelist</h2><input type="text" id="wlWallet" placeholder="Solana wallet" class="w-full p-2 rounded bg-black/50 border mb-2"><input type="text" id="wlName" placeholder="Your name" class="w-full p-2 rounded bg-black/50 border mb-4"><button id="submitWhitelist" class="btn-primary w-full py-2 rounded-full">Submit</button></div></div>
 
 <script>
+    // Адреса
     const ADDRESSES = {
-        BURN: "11111111111111111111111111111111",
-        DEUS: "AXhysCBFq7JAoBxU7osLTj6wq9VjJxESiv5Z759ZfBmZ"
+        DEUS: "AXhysCBFq7JAoBxU7osLTj6wq9VjJxESiv5Z759ZfBmZ",
+        DIABOLUS: "2zaWrMgqduTVfVRbnzPxuk4Sd9v5ifAsfVeSCkPgYYXj"
     };
-    const MODAL = document.getElementById('addressModal');
-    const MODAL_TITLE = document.getElementById('modalTitle');
-    const MODAL_DESC = document.getElementById('modalDesc');
-    const MODAL_ADDRESS = document.getElementById('modalAddress');
 
-    function showModal(title, desc, address) {
-        MODAL_TITLE.innerText = title;
-        MODAL_DESC.innerText = desc;
-        MODAL_ADDRESS.innerText = address;
-        MODAL.style.display = 'flex';
+    let currentAction = null; // 'forGod', 'againstGod', 'eternal'
+    let userWallet = localStorage.getItem('userWallet') || '';
+    let userName = localStorage.getItem('userName') || '';
+
+    document.getElementById('userWallet').value = userWallet;
+    document.getElementById('userName').value = userName;
+
+    document.getElementById('saveDataBtn').onclick = () => {
+        localStorage.setItem('userWallet', document.getElementById('userWallet').value);
+        localStorage.setItem('userName', document.getElementById('userName').value);
+        userWallet = document.getElementById('userWallet').value;
+        userName = document.getElementById('userName').value;
+        alert('Данные сохранены');
+    };
+
+    function showTxidForm(action, desc) {
+        if (!userWallet) { alert('Сначала введите ваш кошелёк'); return; }
+        currentAction = action;
+        document.getElementById('txActionDesc').innerText = desc;
+        document.getElementById('txidForm').style.display = 'block';
+        document.getElementById('txidInput').value = '';
+        document.getElementById('verifyStatus').innerHTML = '';
     }
-    document.getElementById('showBurnVbstBtn').onclick = () => showModal('🕯️ Сжечь VBST', 'Отправьте 1 VBST на этот адрес сжигания:', ADDRESSES.BURN);
-    document.getElementById('showBurnDeusBtn').onclick = () => showModal('💀 Сжечь DEUS', 'Отправьте 1 DEUS на этот адрес сжигания:', ADDRESSES.BURN);
-    document.getElementById('showSendToDeusBtn').onclick = () => showModal('✝️ Отправить VBDC на DEUS', 'Отправьте 1 VBDC на адрес Бога:', ADDRESSES.DEUS);
-    document.getElementById('showEternalBtn').onclick = () => showModal('✨ Вечная свеча', 'Отправьте 1 VBST на нулевой адрес (сжечь) и 1 VBDC на адрес DEUS. Две отдельные транзакции.', ADDRESSES.DEUS + ' (VBDC) и ' + ADDRESSES.BURN + ' (VBST)');
-    document.getElementById('copyAddressBtn').onclick = () => { navigator.clipboard.writeText(MODAL_ADDRESS.innerText); alert('Адрес скопирован'); };
-    document.getElementById('closeModalBtn').onclick = () => MODAL.style.display = 'none';
-    window.onclick = (e) => { if(e.target === MODAL) MODAL.style.display = 'none'; };
 
-    const wpModal = document.getElementById('whitepaperModal'), wlModal = document.getElementById('whitelistModal');
-    document.getElementById('whitepaperBtn').onclick = () => wpModal.style.display = 'flex';
-    document.getElementById('whitelistBtn').onclick = () => wlModal.style.display = 'flex';
-    document.querySelectorAll('.close-modal').forEach(btn => btn.onclick = () => { wpModal.style.display = 'none'; wlModal.style.display = 'none'; });
-    document.getElementById('submitWhitelist').onclick = () => { alert("Заявка отправлена"); wlModal.style.display = 'none'; };
+    document.getElementById('forGodBtn').onclick = () => showTxidForm('forGod', 'Отправьте 1 VBDC на адрес DEUS. Вставьте TXID:');
+    document.getElementById('againstGodBtn').onclick = () => showTxidForm('againstGod', 'Отправьте 1 DEUS на адрес DIABOLUS. Вставьте TXID:');
+    document.getElementById('eternalBtn').onclick = () => showTxidForm('eternal', 'Отправьте 1 VBST + 1 VBDC на адрес DEUS (две транзакции или одна с двумя токенами). Вставьте TXID:');
+
+    document.getElementById('verifyBtn').onclick = async () => {
+        const txid = document.getElementById('txidInput').value.trim();
+        if (!txid) { alert('Введите TXID'); return; }
+        document.getElementById('verifyStatus').innerHTML = '⏳ Проверяем...';
+
+        try {
+            // 1. Запрашиваем данные транзакции через Solscan API
+            const url = `https://public-api.solscan.io/transaction/${txid}`;
+            const resp = await fetch(url);
+            const data = await resp.json();
+            
+            if (!data || !data.txId) throw new Error('Транзакция не найдена');
+
+            // 2. Проверяем, что отправитель совпадает с userWallet
+            const signer = data.signer?.[0] || data.accountKeys?.[0];
+            if (signer !== userWallet) throw new Error('TXID не соответствует вашему кошельку');
+
+            // 3. Проверяем действия в зависимости от currentAction
+            let isValid = false;
+            if (currentAction === 'forGod') {
+                // Проверяем: отправлен VBDC на DEUS
+                const transfer = data.tokenTransfers?.find(t => 
+                    t.mint === "2zaWrMgqduTVfVRbnzPxuk4Sd9v5ifAsfVeSCkPgYYXj" && // VBDC
+                    t.to === ADDRESSES.DEUS &&
+                    parseInt(t.amount) >= 1_000_000_000
+                );
+                if (transfer) isValid = true;
+            } 
+            else if (currentAction === 'againstGod') {
+                const transfer = data.tokenTransfers?.find(t => 
+                    t.mint === "AXhysCBFq7JAoBxU7osLTj6wq9VjJxESiv5Z759ZfBmZ" && // DEUS
+                    t.to === ADDRESSES.DIABOLUS &&
+                    parseInt(t.amount) >= 1_000_000_000
+                );
+                if (transfer) isValid = true;
+            }
+            else if (currentAction === 'eternal') {
+                // Проверяем: отправлены VBST и VBDC на DEUS (два перевода)
+                const vbdcOk = data.tokenTransfers?.some(t => 
+                    t.mint === "2zaWrMgqduTVfVRbnzPxuk4Sd9v5ifAsfVeSCkPgYYXj" &&
+                    t.to === ADDRESSES.DEUS && parseInt(t.amount) >= 1_000_000_000
+                );
+                const vbstOk = data.tokenTransfers?.some(t => 
+                    t.mint === "8mse7Sm7xy1pfp6cP8LdZ1oh2RsdGAZajuEENDd2tbbk" &&
+                    t.to === ADDRESSES.DEUS && parseInt(t.amount) >= 1_000_000_000
+                );
+                if (vbdcOk && vbstOk) isValid = true;
+            }
+
+            if (!isValid) throw new Error('Транзакция не соответствует действию');
+
+            // 4. Сохраняем свечу в localStorage
+            const now = new Date();
+            const expires = new Date(now.getTime() + 60*60*1000); // +1 час
+            const candle = {
+                wallet: userWallet,
+                name: userName || userWallet.slice(0,8),
+                action: currentAction,
+                timestamp: now.toISOString(),
+                expires: currentAction === 'eternal' ? null : expires.toISOString(),
+                txid: txid
+            };
+
+            let candles = JSON.parse(localStorage.getItem('candles') || '[]');
+            candles.push(candle);
+            localStorage.setItem('candles', JSON.stringify(candles));
+
+            document.getElementById('verifyStatus').innerHTML = '✅ Свеча добавлена! Перейдите на страницу "Свечи".';
+            setTimeout(() => { window.location.href = 'candles.html'; }, 2000);
+        } catch (err) {
+            document.getElementById('verifyStatus').innerHTML = `❌ Ошибка: ${err.message}`;
+        }
+    };
 </script>
 </body>
 </html>
