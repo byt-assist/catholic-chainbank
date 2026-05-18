@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Книга памяти · Chain Bank</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>body{background:radial-gradient(circle at 10%20%,#0B132B,#070C1A);color:white;}.glass{background:rgba(255,255,255,0.05);backdrop-filter:blur(16px);border-radius:2rem;padding:1.5rem;margin-bottom:1.5rem;}.btn{padding:0.7rem 1.2rem;border-radius:2rem;font-weight:600;cursor:pointer;background:rgba(255,255,255,0.1);}.btn-primary{background:linear-gradient(90deg,#C5A059,#FFDF85);color:#0B132B;}</style>
+</head>
+<body class="p-4">
+<div class="max-w-3xl mx-auto">
+    <div class="flex justify-between items-center mb-6"><h1 class="text-3xl font-bold">📖 Книга памяти</h1><a href="index.html" class="btn">← На главную</a></div>
+    <div class="glass"><h2 class="text-xl font-bold mb-3">Добавить запись</h2><input type="text" id="memoryName" placeholder="Имя усопшего" class="w-full p-2 rounded bg-black/50 border mb-2"><input type="text" id="memoryWallet" placeholder="Ваш кошелёк (для связи)" class="w-full p-2 rounded bg-black/50 border mb-2"><textarea id="memoryText" rows="2" placeholder="Молитва / пожелание" class="w-full p-2 rounded bg-black/50 border mb-2"></textarea><button id="addMemoryBtn" class="btn-primary w-full py-2 rounded-full">Добавить в Книгу памяти</button></div>
+    <div class="glass"><h2 class="text-xl font-bold mb-3">🙏 Вечная память</h2><div id="memoryList"></div></div>
+</div>
+<script>
+    let memories = JSON.parse(localStorage.getItem('memories') || '[{"name":"Иван Петров","from":"Анна","text":"Царствие Небесное","date":"2025-05-18"}]');
+    function renderMemories() {
+        let container=document.getElementById('memoryList');
+        if(memories.length===0){container.innerHTML='<div class="opacity-60">Пока нет записей</div>';return;}
+        container.innerHTML=memories.map(m=>`<div class="mb-3 p-3 rounded bg-black/30"><div class="font-bold">${m.name}</div><div>${m.text}</div><div class="text-xs opacity-60">От ${m.from}, ${m.date}</div></div>`).join('');
+    }
+    document.getElementById('addMemoryBtn').onclick=()=>{let name=document.getElementById('memoryName').value.trim();let wallet=document.getElementById('memoryWallet').value.trim();let text=document.getElementById('memoryText').value.trim();if(!name||!text)return;memories.unshift({name,from:wallet.slice(0,8),text,date:new Date().toISOString().slice(0,10)});localStorage.setItem('memories',JSON.stringify(memories));renderMemories();document.getElementById('memoryName').value='';document.getElementById('memoryText').value='';alert('Запись добавлена в Книгу памяти');};
+    renderMemories();
+</script>
+</body>
+</html>
