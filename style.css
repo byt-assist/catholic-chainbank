@@ -1,0 +1,143 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap');
+
+:root {
+    --gold: #C5A059;
+    --gold-light: #FFDF85;
+    --gold-dark: #8B6914;
+    --beige-light: #F5E6D3;
+    --beige: #E8D5B7;
+    --beige-dark: #C4A882;
+    --dark-bg: #1A1A1A;
+    --brown-dark: #2C2418;
+    --brown-light: #4A3B2C;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: 'Inter', sans-serif;
+    background: linear-gradient(135deg, #2C2418 0%, #1A1510 50%, #0D0A07 100%);
+    color: var(--beige-light);
+    min-height: 100vh;
+}
+
+/* Церковный орнамент сверху */
+body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 60px;
+    background: repeating-linear-gradient(90deg, transparent, transparent 40px, rgba(197,160,89,0.15) 40px, rgba(197,160,89,0.15) 80px);
+    pointer-events: none;
+    z-index: 100;
+}
+
+/* Вензельный уголок */
+body::after {
+    content: "⛪";
+    position: fixed;
+    bottom: 15px;
+    right: 15px;
+    font-size: 24px;
+    opacity: 0.2;
+    pointer-events: none;
+    font-family: serif;
+}
+
+h1, h2, h3, .title-font {
+    font-family: 'Cormorant Garamond', serif;
+    letter-spacing: 1px;
+}
+
+.glass {
+    background: rgba(44, 36, 24, 0.75);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(197, 160, 89, 0.3);
+    border-radius: 24px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.05);
+}
+
+.btn {
+    padding: 0.7rem 1.5rem;
+    border-radius: 40px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    display: inline-block;
+    text-align: center;
+    font-family: 'Inter', sans-serif;
+    border: none;
+}
+
+.btn-primary {
+    background: linear-gradient(90deg, var(--gold-dark), var(--gold), var(--gold-light));
+    color: #1A1510;
+    font-weight: 600;
+    box-shadow: 0 2px 8px rgba(197,160,89,0.3);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(197,160,89,0.4);
+    background: linear-gradient(90deg, var(--gold), var(--gold-light), var(--gold));
+}
+
+.btn-secondary {
+    background: rgba(197, 160, 89, 0.15);
+    border: 1px solid rgba(197, 160, 89, 0.4);
+    color: var(--beige-light);
+}
+
+.btn-secondary:hover {
+    background: rgba(197, 160, 89, 0.3);
+    border-color: var(--gold);
+}
+
+.btn-danger {
+    background: rgba(139, 69, 19, 0.6);
+    border: 1px solid #8B4519;
+}
+
+.btn-danger:hover {
+    background: #8B4519;
+}
+
+.token-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.token-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 28px rgba(197,160,89,0.2);
+}
+
+.candle-icon {
+    filter: drop-shadow(0 0 6px rgba(255,200,100,0.6));
+}
+
+.church-icon {
+    font-size: 1.5rem;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+}
+
+/* Стилизация скроллбара */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: #2C2418; border-radius: 10px; }
+::-webkit-scrollbar-thumb { background: var(--gold-dark); border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: var(--gold); }
+
+/* Декоративные линии */
+.divider {
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--gold), var(--gold-light), var(--gold), transparent);
+    margin: 1.5rem 0;
+}
+
+.orthodox-cross {
+    display: inline-block;
+    font-size: 1.2rem;
+    filter: drop-shadow(0 0 4px rgba(197,160,89,0.5));
+}
+</style>
