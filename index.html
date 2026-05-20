@@ -103,7 +103,7 @@
             <img src="https://raw.githubusercontent.com/byt-assist/catholic-chainbank/refs/heads/main/sanctus.png" class="w-24 h-24 mx-auto mb-3 rounded-full border-2 border-gold">
             <h2 class="text-2xl font-bold">VBST (SANCTUS)</h2>
             <div class="text-2xl font-bold mt-2 text-gold-light">$1.00</div>
-            <button id="eternalBtn" class="btn-primary w-full py-2 rounded-full text-sm mt-3"><span data-i18n="eternal_btn">✨ Eternal Candle</span></button>
+            <button id="eternalBtn" class="btn-primary w-full py-2 rounded-full text-sm mt-3"><span data-i18n="eternal_candle">✨ Eternal Candle</span></button>
         </div>
         <div class="glass token-card text-center">
             <img src="https://raw.githubusercontent.com/byt-assist/catholic-chainbank/refs/heads/main/diabolus.png" class="w-24 h-24 mx-auto mb-3 rounded-full border-2 border-gold">
@@ -260,13 +260,13 @@ function updateCounters() {
 setInterval(updateCounters, 60000);
 updateCounters();
 
-// Календарь (католический)
+// Календарь
 const catholicSaints = {5: {20: "St. Bernardine of Siena"}, 5: {21: "St. Christopher Magallanes"}};
 const today = new Date();
 const month = today.getMonth() + 1;
 const day = today.getDate();
 let saint = (catholicSaints[month] && catholicSaints[month][day]) ? catholicSaints[month][day] : (translations[currentLang]?.ordinary_day || "Ordinary Time");
-document.getElementById('calendar').innerHTML = `<div class="text-center"><div class="text-gold-light text-lg">${today.toLocaleDateString(currentLang === 'ru' ? 'ru' : 'en', {month: 'long', day: 'numeric'})}</div><div class="text-xl font-bold">${saint}</div><div class="text-sm opacity-70 mt-1"><span data-i18n="light_candle">🕯️ Light a candle in his honor</span></div></div>`;
+document.getElementById('calendar').innerHTML = `<div class="text-center"><div class="text-gold-light text-lg">${today.toLocaleDateString(currentLang === 'ru' ? 'ru' : 'en', {month: 'long', day: 'numeric'})}</div><div class="text-xl font-bold">${saint}</div><div class="text-sm opacity-70 mt-1" data-i18n="light_candle">🕯️ Light a candle in his honor</div></div>`;
 
 let candles = JSON.parse(localStorage.getItem('candles') || '[]');
 let donors = {};
