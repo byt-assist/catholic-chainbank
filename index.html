@@ -29,7 +29,6 @@
 <body class="p-4 md:p-6">
 <div class="max-w-7xl mx-auto">
 
-    <!-- Шапка -->
     <div class="flex flex-wrap justify-between items-center gap-3 mb-8 pb-4 border-b border-gold/30">
         <div class="flex items-center gap-3">
             <span class="text-3xl">✝️</span>
@@ -43,7 +42,6 @@
         </div>
     </div>
 
-    <!-- Меню (без кнопки "Свечи") -->
     <div class="flex flex-wrap gap-3 mb-8 justify-center">
         <a href="donate.html" class="btn-secondary px-4 py-2 rounded-full text-sm"><span>💳</span> <span data-i18n="buy_tokens">Купить токены</span></a>
         <a href="dao.html" class="btn-secondary px-4 py-2 rounded-full text-sm"><span>🗳️</span> <span data-i18n="dao">DAO</span></a>
@@ -56,13 +54,11 @@
         <a href="confession.html" class="btn-secondary px-4 py-2 rounded-full text-sm"><span>🙏</span> Исповедь</a>
     </div>
 
-    <!-- Календарь и трансляция -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
         <div class="glass"><h2 class="text-xl font-bold mb-3" data-i18n="calendar">📅 Liturgical Calendar</h2><div id="calendar"></div></div>
         <div class="glass"><h2 class="text-xl font-bold mb-3" data-i18n="live_title">📺 Vatican Live Stream</h2><div class="aspect-video"><iframe src="https://www.youtube.com/embed/K-zknhNgt7Y?autoplay=1&mute=1" class="w-full h-full rounded-xl" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div><p class="text-xs opacity-60 text-center mt-2" data-i18n="live_source">📡 Vatican Media official stream</p></div>
     </div>
 
-    <!-- Данные пользователя -->
     <div class="glass">
         <h2 class="text-xl font-bold mb-4"><span class="text-gold text-2xl">✙</span> <span data-i18n="your_data">Ваши данные</span></h2>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -72,14 +68,12 @@
         <button id="saveDataBtn" class="btn-primary w-full md:w-auto mt-4 px-8 py-2 rounded-full text-sm">✙ Сохранить</button>
     </div>
 
-    <!-- Счётчики -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-5 mb-8">
         <div class="glass text-center border-l-4 border-gold"><div class="text-sm opacity-70">📿 <span data-i18n="forGod">За Бога</span></div><div class="text-3xl font-bold text-gold-light" id="forGodCount">0</div></div>
         <div class="glass text-center border-l-4 border-gold"><div class="text-sm opacity-70">💀 <span data-i18n="againstGod">Против Бога</span></div><div class="text-3xl font-bold text-red-400" id="againstGodCount">0</div></div>
         <div class="glass text-center border-l-4 border-gold"><div class="text-sm opacity-70">🕯️ <span data-i18n="candles_count">Свечей горит</span></div><div class="text-3xl font-bold text-amber-400" id="candlesCount">0</div></div>
     </div>
 
-    <!-- Токены и кнопки -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
         <div class="glass token-card text-center">
             <img src="https://raw.githubusercontent.com/byt-assist/catholic-chainbank/refs/heads/main/deus.png" class="w-24 h-24 mx-auto mb-3 rounded-full border-2 border-gold">
@@ -101,14 +95,12 @@
         </div>
     </div>
 
-    <!-- Прямые пожертвования -->
     <div class="glass text-center">
         <h2 class="text-xl font-bold mb-3">🤝 Прямые пожертвования (SOL/USDC)</h2>
         <div class="bg-black/50 p-3 rounded-xl font-mono text-sm break-all">GD7BH3LZ1JNyn5Nb5w4C4b2iR6FTW5dd6aN4vczwQdkD</div>
         <button id="copyWalletBtn" class="btn-primary mt-3 py-1 px-5 rounded-full text-sm">📋 Копировать</button>
     </div>
 
-    <!-- SWIFT -->
     <div class="glass">
         <h2 class="text-xl font-bold mb-3">🏦 Крупные пожертвования (SWIFT/SEPA)</h2>
         <p class="text-sm mb-3">Для пожертвований от $1000. После перевода свяжитесь с нами:</p>
@@ -117,15 +109,12 @@
 
 </div>
 
-<!-- Модальное окно для всех действий -->
 <div id="actionModal" class="modal">
     <div class="modal-content">
         <h3 id="modalTitle" class="text-xl font-bold mb-2 text-gold-light"></h3>
         <p id="modalDesc" class="text-sm mb-3"></p>
         <div class="address-box" id="modalAddress"></div>
-        <div class="flex gap-2 mb-3">
-            <button id="copyAddressBtn" class="copy-btn">📋 Копировать адрес</button>
-        </div>
+        <div class="flex gap-2 mb-3"><button id="copyAddressBtn" class="copy-btn">📋 Копировать адрес</button></div>
         <p class="text-xs opacity-70 mb-2">После отправки вставьте TXID:</p>
         <input type="text" id="txidInput" class="w-full p-2 rounded bg-black/50 border border-gold/30 mb-2" placeholder="Вставьте TXID">
         <button id="confirmActionBtn" class="btn-primary w-full py-2 rounded-full">✅ Подтвердить</button>
@@ -135,151 +124,30 @@
 </div>
 
 <script>
-// Адреса для католического сайта
-const ADDRESSES = {
-    DEUS: "AXhysCBFq7JAoBxU7osLTj6wq9VjJxESiv5Z759ZfBmZ",
-    SANCTUS: "8mse7Sm7xy1pfp6cP8LdZ1oh2RsdGAZajuEENDd2tbbk",
-    DIABOLUS: "2zaWrMgqduTVfVRbnzPxuk4Sd9v5ifAsfVeSCkPgYYXj"
-};
-
+const ADDRESSES = { DEUS: "AXhysCBFq7JAoBxU7osLTj6wq9VjJxESiv5Z759ZfBmZ", SANCTUS: "8mse7Sm7xy1pfp6cP8LdZ1oh2RsdGAZajuEENDd2tbbk", DIABOLUS: "2zaWrMgqduTVfVRbnzPxuk4Sd9v5ifAsfVeSCkPgYYXj" };
 const actions = {
     forGod:   { title: "📿 За Бога", desc: "Отправьте 1 DIABOLUS (VBDC) на адрес DEUS", address: ADDRESSES.DEUS, token: "DIABOLUS", amount: 1 },
     againstGod: { title: "💀 Против Бога", desc: "Отправьте 1 DEUS (VBDT) на адрес DIABOLUS", address: ADDRESSES.DIABOLUS, token: "DEUS", amount: 1 },
     eternal:  { title: "✨ Вечная свеча", desc: "Отправьте 1 SANCTUS + 1 DIABOLUS на адрес DEUS", address: ADDRESSES.DEUS, token: "SANCTUS + DIABOLUS", amount: "1+1" }
 };
-
 let currentAction = null;
 let userWallet = localStorage.getItem('userWallet') || '';
 let userName = localStorage.getItem('userName') || '';
-
 document.getElementById('userWallet').value = userWallet;
 document.getElementById('userName').value = userName;
-
-document.getElementById('saveDataBtn').onclick = () => {
-    localStorage.setItem('userWallet', document.getElementById('userWallet').value);
-    localStorage.setItem('userName', document.getElementById('userName').value);
-    userWallet = document.getElementById('userWallet').value;
-    userName = document.getElementById('userName').value;
-    alert('Сохранено');
-};
-
-document.getElementById('copyWalletBtn').onclick = () => {
-    navigator.clipboard.writeText("GD7BH3LZ1JNyn5Nb5w4C4b2iR6FTW5dd6aN4vczwQdkD");
-    alert('Адрес скопирован');
-};
-
-function showModal(actionKey) {
-    const a = actions[actionKey];
-    if (!a) return;
-    currentAction = actionKey;
-    document.getElementById('modalTitle').innerText = a.title;
-    document.getElementById('modalDesc').innerHTML = `<strong>📤 Что делать:</strong> ${a.desc}<br><strong>💰 Количество:</strong> ${a.amount} ${a.token}`;
-    document.getElementById('modalAddress').innerHTML = `<strong>📤 Отправить на адрес:</strong><br>${a.address}`;
-    document.getElementById('txidInput').value = '';
-    document.getElementById('actionStatus').innerHTML = '';
-    document.getElementById('actionModal').style.display = 'flex';
-}
-
+document.getElementById('saveDataBtn').onclick = () => { localStorage.setItem('userWallet', document.getElementById('userWallet').value); localStorage.setItem('userName', document.getElementById('userName').value); userWallet = document.getElementById('userWallet').value; userName = document.getElementById('userName').value; alert('Сохранено'); };
+document.getElementById('copyWalletBtn').onclick = () => { navigator.clipboard.writeText("GD7BH3LZ1JNyn5Nb5w4C4b2iR6FTW5dd6aN4vczwQdkD"); alert('Адрес скопирован'); };
+function showModal(actionKey) { const a = actions[actionKey]; if (!a) return; currentAction = actionKey; document.getElementById('modalTitle').innerText = a.title; document.getElementById('modalDesc').innerHTML = `<strong>📤 Что делать:</strong> ${a.desc}<br><strong>💰 Количество:</strong> ${a.amount} ${a.token}`; document.getElementById('modalAddress').innerHTML = `<strong>📤 Отправить на адрес:</strong><br>${a.address}`; document.getElementById('txidInput').value = ''; document.getElementById('actionStatus').innerHTML = ''; document.getElementById('actionModal').style.display = 'flex'; }
 document.getElementById('forGodBtn').onclick = () => showModal('forGod');
 document.getElementById('againstGodBtn').onclick = () => showModal('againstGod');
 document.getElementById('eternalBtn').onclick = () => showModal('eternal');
-
-document.getElementById('copyAddressBtn').onclick = () => {
-    const addr = actions[currentAction]?.address;
-    if (addr) {
-        navigator.clipboard.writeText(addr);
-        alert('Адрес скопирован: ' + addr);
-    }
-};
-
-document.getElementById('confirmActionBtn').onclick = async () => {
-    const txid = document.getElementById('txidInput').value.trim();
-    if (!txid) { alert('Введите TXID'); return; }
-    if (!userWallet) { alert('Сначала сохраните ваш кошелёк на главной странице'); return; }
-    document.getElementById('actionStatus').innerHTML = '⏳ Проверяем...';
-    try {
-        const url = `https://public-api.solscan.io/transaction/${txid}`;
-        const resp = await fetch(url);
-        const data = await resp.json();
-        if (!data || !data.txId) throw new Error('Транзакция не найдена');
-        const signer = data.signer?.[0] || data.accountKeys?.[0];
-        if (signer !== userWallet) throw new Error('TXID не с вашего кошелька');
-        
-        let isValid = false;
-        if (currentAction === 'forGod') {
-            const transfer = data.tokenTransfers?.find(t => t.mint === ADDRESSES.DIABOLUS && t.to === ADDRESSES.DEUS && parseInt(t.amount) >= 1_000_000_000);
-            if (transfer) isValid = true;
-        } else if (currentAction === 'againstGod') {
-            const transfer = data.tokenTransfers?.find(t => t.mint === ADDRESSES.DEUS && t.to === ADDRESSES.DIABOLUS && parseInt(t.amount) >= 1_000_000_000);
-            if (transfer) isValid = true;
-        } else if (currentAction === 'eternal') {
-            const sanctusOk = data.tokenTransfers?.some(t => t.mint === ADDRESSES.SANCTUS && t.to === ADDRESSES.DEUS && parseInt(t.amount) >= 1_000_000_000);
-            const diabolusOk = data.tokenTransfers?.some(t => t.mint === ADDRESSES.DIABOLUS && t.to === ADDRESSES.DEUS && parseInt(t.amount) >= 1_000_000_000);
-            if (sanctusOk && diabolusOk) isValid = true;
-        }
-        if (!isValid) throw new Error('Транзакция не соответствует действию');
-        
-        const now = new Date();
-        const expires = new Date(now.getTime() + 60 * 60 * 1000);
-        const candle = {
-            wallet: userWallet,
-            name: userName || userWallet.slice(0,8),
-            action: currentAction,
-            timestamp: now.toISOString(),
-            expires: currentAction === 'eternal' ? null : expires.toISOString(),
-            txid: txid
-        };
-        let candles = JSON.parse(localStorage.getItem('candles') || '[]');
-        candles.push(candle);
-        localStorage.setItem('candles', JSON.stringify(candles));
-        document.getElementById('actionStatus').innerHTML = '✅ Свеча зажжена! Страница обновится...';
-        setTimeout(() => { location.reload(); }, 1500);
-    } catch (err) {
-        document.getElementById('actionStatus').innerHTML = `❌ ${err.message}`;
-    }
-};
-
+document.getElementById('copyAddressBtn').onclick = () => { if (currentAction) { navigator.clipboard.writeText(actions[currentAction].address); alert('Адрес скопирован: ' + actions[currentAction].address); } };
+document.getElementById('confirmActionBtn').onclick = async () => { const txid = document.getElementById('txidInput').value.trim(); if (!txid) { alert('Введите TXID'); return; } if (!userWallet) { alert('Сначала сохраните ваш кошелёк на главной странице'); return; } document.getElementById('actionStatus').innerHTML = '⏳ Проверяем...'; try { const url = `https://public-api.solscan.io/transaction/${txid}`; const resp = await fetch(url); const data = await resp.json(); if (!data || !data.txId) throw new Error('Транзакция не найдена'); const signer = data.signer?.[0] || data.accountKeys?.[0]; if (signer !== userWallet) throw new Error('TXID не с вашего кошелька'); let isValid = false; if (currentAction === 'forGod') { const transfer = data.tokenTransfers?.find(t => t.mint === ADDRESSES.DIABOLUS && t.to === ADDRESSES.DEUS && parseInt(t.amount) >= 1_000_000_000); if (transfer) isValid = true; } else if (currentAction === 'againstGod') { const transfer = data.tokenTransfers?.find(t => t.mint === ADDRESSES.DEUS && t.to === ADDRESSES.DIABOLUS && parseInt(t.amount) >= 1_000_000_000); if (transfer) isValid = true; } else if (currentAction === 'eternal') { const sanctusOk = data.tokenTransfers?.some(t => t.mint === ADDRESSES.SANCTUS && t.to === ADDRESSES.DEUS && parseInt(t.amount) >= 1_000_000_000); const diabolusOk = data.tokenTransfers?.some(t => t.mint === ADDRESSES.DIABOLUS && t.to === ADDRESSES.DEUS && parseInt(t.amount) >= 1_000_000_000); if (sanctusOk && diabolusOk) isValid = true; } if (!isValid) throw new Error('Транзакция не соответствует действию'); const now = new Date(); const expires = new Date(now.getTime() + 60*60*1000); const candle = { wallet: userWallet, name: userName || userWallet.slice(0,8), action: currentAction, timestamp: now.toISOString(), expires: currentAction === 'eternal' ? null : expires.toISOString(), txid: txid }; let candles = JSON.parse(localStorage.getItem('candles') || '[]'); candles.push(candle); localStorage.setItem('candles', JSON.stringify(candles)); document.getElementById('actionStatus').innerHTML = '✅ Свеча зажжена! Страница обновится...'; setTimeout(() => { location.reload(); }, 1500); } catch (err) { document.getElementById('actionStatus').innerHTML = `❌ ${err.message}`; } };
 document.getElementById('closeModalBtn').onclick = () => { document.getElementById('actionModal').style.display = 'none'; };
 window.onclick = (e) => { if (e.target === document.getElementById('actionModal')) document.getElementById('actionModal').style.display = 'none'; };
-
-// Календарь с католическими святыми (переводится)
-function updateCalendar() {
-    const catholicSaints = {
-        en: {5: {20: "St. Bernardine of Siena"}}, ru: {5: {20: "Св. Бернардин Сиенский"}},
-        es: {5: {20: "San Bernardino de Siena"}}, zh: {5: {20: "锡耶纳的圣伯纳丁"}},
-        fr: {5: {20: "Saint Bernardin de Sienne"}}, de: {5: {20: "Hl. Bernhardin von Siena"}},
-        it: {5: {20: "San Bernardino da Siena"}}, ja: {5: {20: "シエナの聖ベルナルディーノ"}}
-    };
-    const today = new Date();
-    const month = today.getMonth() + 1;
-    const day = today.getDate();
-    const lang = currentLang || 'ru';
-    const langSaints = catholicSaints[lang] || catholicSaints.en;
-    let saint = (langSaints[month] && langSaints[month][day]) ? langSaints[month][day] : (translations[lang]?.ordinary_day || "Ordinary Time");
-    const dateStr = today.toLocaleDateString(lang === 'ru' ? 'ru' : 'en', {month: 'long', day: 'numeric'});
-    const lightCandleText = translations[lang]?.light_candle || "🕯️ Light a candle in his honor";
-    document.getElementById('calendar').innerHTML = `<div class="text-center"><div class="text-gold-light text-lg">${dateStr}</div><div class="text-xl font-bold">${saint}</div><div class="text-sm opacity-70 mt-1">${lightCandleText}</div></div>`;
-}
-
-function updateCounters() {
-    let candles = JSON.parse(localStorage.getItem('candles') || '[]');
-    let now = new Date();
-    let active = candles.filter(c => {
-        if (c.action === 'eternal') return true;
-        if (c.expires && new Date(c.expires) > now) return true;
-        return false;
-    });
-    document.getElementById('candlesCount').innerText = active.length;
-    let forGod = candles.filter(c => c.action === 'forGod' || c.action === 'eternal').length;
-    let againstGod = candles.filter(c => c.action === 'againstGod').length;
-    document.getElementById('forGodCount').innerText = forGod;
-    document.getElementById('againstGodCount').innerText = againstGod;
-}
-
-setInterval(updateCounters, 60000);
-updateCalendar();
-updateCounters();
-
+function updateCalendar() { const catholicSaints = { en:{5:{20:"St. Bernardine of Siena"}}, ru:{5:{20:"Св. Бернардин Сиенский"}}, es:{5:{20:"San Bernardino de Siena"}}, zh:{5:{20:"锡耶纳的圣伯纳丁"}}, fr:{5:{20:"Saint Bernardin de Sienne"}}, de:{5:{20:"Hl. Bernhardin von Siena"}}, it:{5:{20:"San Bernardino da Siena"}}, ja:{5:{20:"シエナの聖ベルナルディーノ"}} }; const today = new Date(); const month = today.getMonth() + 1; const day = today.getDate(); const lang = currentLang || 'ru'; const langSaints = catholicSaints[lang] || catholicSaints.en; let saint = (langSaints[month] && langSaints[month][day]) ? langSaints[month][day] : (translations[lang]?.ordinary_day || "Ordinary Time"); const dateStr = today.toLocaleDateString(lang === 'ru' ? 'ru' : 'en', {month: 'long', day: 'numeric'}); const lightCandleText = translations[lang]?.light_candle || "🕯️ Light a candle in his honor"; document.getElementById('calendar').innerHTML = `<div class="text-center"><div class="text-gold-light text-lg">${dateStr}</div><div class="text-xl font-bold">${saint}</div><div class="text-sm opacity-70 mt-1">${lightCandleText}</div></div>`; }
+function updateCounters() { let candles = JSON.parse(localStorage.getItem('candles') || '[]'); let now = new Date(); let active = candles.filter(c => { if (c.action === 'eternal') return true; if (c.expires && new Date(c.expires) > now) return true; return false; }); document.getElementById('candlesCount').innerText = active.length; let forGod = candles.filter(c => c.action === 'forGod' || c.action === 'eternal').length; let againstGod = candles.filter(c => c.action === 'againstGod').length; document.getElementById('forGodCount').innerText = forGod; document.getElementById('againstGodCount').innerText = againstGod; }
+setInterval(updateCounters, 60000); updateCalendar(); updateCounters();
 let currentLang = localStorage.getItem('chainbank_lang') || 'ru';
 </script>
 </body>
