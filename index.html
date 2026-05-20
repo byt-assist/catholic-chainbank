@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -25,105 +25,114 @@
 <body class="p-4 md:p-6">
 <div class="max-w-7xl mx-auto">
 
-    <!-- Шапка с переключателем на православных -->
+    <!-- Шапка -->
     <div class="flex flex-wrap justify-between items-center gap-3 mb-8 pb-4 border-b border-gold/30">
         <div class="flex items-center gap-3">
             <span class="text-3xl">✝️</span>
-            <h1 class="text-3xl md:text-4xl font-bold" style="font-family:'Cormorant Garamond',serif; color:#FFDF85;">Vatican Bank</h1>
+            <h1 class="text-3xl md:text-4xl font-bold" style="font-family:'Cormorant Garamond',serif; color:#FFDF85;" data-i18n="title">Vatican Bank</h1>
             <span class="text-xl opacity-60">|</span>
-            <span class="text-sm opacity-70 hidden md:inline">Catholic · Faith in Blockchain</span>
+            <span class="text-sm opacity-70 hidden md:inline" data-i18n="motto">Catholic · Faith in Blockchain</span>
         </div>
         <div class="flex flex-wrap gap-2 items-center">
             <a href="https://byt-assist.github.io/chainbank/" class="btn-secondary px-3 py-1 rounded-full text-xs flex items-center gap-1">
-                <span>☦️</span> <span>Православная ветка</span>
+                <span>☦️</span> <span data-i18n="orthodox_link">Православная ветка</span>
             </a>
             <div id="lang-switcher" class="flex flex-wrap gap-1"></div>
         </div>
     </div>
 
-    <!-- Меню навигации -->
+    <!-- Меню -->
     <div class="flex flex-wrap gap-3 mb-8 justify-center">
-        <a href="candles.html" class="btn-secondary px-4 py-2 rounded-full text-sm flex items-center gap-1"><span>🕯️</span> <span>Candles</span></a>
-        <a href="donate.html" class="btn-secondary px-4 py-2 rounded-full text-sm flex items-center gap-1"><span>💳</span> <span>Buy tokens</span></a>
-        <a href="dao.html" class="btn-secondary px-4 py-2 rounded-full text-sm flex items-center gap-1"><span>🗳️</span> <span>DAO</span></a>
-        <a href="memory.html" class="btn-secondary px-4 py-2 rounded-full text-sm flex items-center gap-1"><span>📖</span> <span>Memory</span></a>
-        <a href="prayers.html" class="btn-secondary px-4 py-2 rounded-full text-sm flex items-center gap-1"><span>🙏</span> Prayers</a>
-        <a href="saints.html" class="btn-secondary px-4 py-2 rounded-full text-sm flex items-center gap-1"><span>👼</span> Saints</a>
-        <a href="pilgrim.html" class="btn-secondary px-4 py-2 rounded-full text-sm flex items-center gap-1"><span>🚶</span> Pilgrim</a>
-        <a href="parishes.html" class="btn-secondary px-4 py-2 rounded-full text-sm flex items-center gap-1"><span>⛪</span> Parishes</a>
+        <a href="candles.html" class="btn-secondary px-4 py-2 rounded-full text-sm flex items-center gap-1"><span>🕯️</span> <span data-i18n="candles">Candles</span></a>
+        <a href="donate.html" class="btn-secondary px-4 py-2 rounded-full text-sm flex items-center gap-1"><span>💳</span> <span data-i18n="buy_tokens">Buy tokens</span></a>
+        <a href="dao.html" class="btn-secondary px-4 py-2 rounded-full text-sm flex items-center gap-1"><span>🗳️</span> <span data-i18n="dao">DAO</span></a>
+        <a href="memory.html" class="btn-secondary px-4 py-2 rounded-full text-sm flex items-center gap-1"><span>📖</span> <span data-i18n="memory">Memory</span></a>
+        <a href="prayers.html" class="btn-secondary px-4 py-2 rounded-full text-sm flex items-center gap-1"><span>🙏</span> <span data-i18n="prayers">Prayers</span></a>
+        <a href="saints.html" class="btn-secondary px-4 py-2 rounded-full text-sm flex items-center gap-1"><span>👼</span> <span data-i18n="saints">Saints</span></a>
+        <a href="pilgrim.html" class="btn-secondary px-4 py-2 rounded-full text-sm flex items-center gap-1"><span>🚶</span> <span data-i18n="pilgrim">Pilgrim</span></a>
+        <a href="parishes.html" class="btn-secondary px-4 py-2 rounded-full text-sm flex items-center gap-1"><span>⛪</span> <span data-i18n="parishes">Parishes</span></a>
     </div>
 
     <!-- Календарь и трансляция -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
         <div class="glass">
-            <h2 class="text-xl font-bold mb-3">📅 Liturgical Calendar</h2>
+            <h2 class="text-xl font-bold mb-3" data-i18n="calendar">📅 Liturgical Calendar</h2>
             <div id="calendar"></div>
         </div>
         <div class="glass">
-            <h2 class="text-xl font-bold mb-3">📺 Vatican Live Stream</h2>
+            <h2 class="text-xl font-bold mb-3" data-i18n="live_title">📺 Vatican Live Stream</h2>
             <div class="aspect-video">
                 <iframe src="https://www.youtube.com/embed/live_stream?channel=UCxIsef9129LJO2e6h8hR-Ag" class="w-full h-full rounded-xl" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
             </div>
-            <p class="text-xs opacity-60 text-center mt-2">📡 Vatican Media official stream</p>
+            <p class="text-xs opacity-60 text-center mt-2" data-i18n="live_source">📡 Vatican Media official stream</p>
         </div>
     </div>
 
     <!-- Топ доноров -->
     <div class="glass">
-        <h2 class="text-xl font-bold mb-3">👑 Top Donors (this week)</h2>
+        <h2 class="text-xl font-bold mb-3" data-i18n="top_donors">👑 Top Donors (this week)</h2>
         <div id="topDonors" class="space-y-2"></div>
     </div>
 
     <!-- Данные пользователя -->
     <div class="glass">
-        <h2 class="text-xl font-bold mb-4 flex items-center gap-2"><span class="text-gold text-2xl">✙</span> Your data</h2>
+        <h2 class="text-xl font-bold mb-4 flex items-center gap-2"><span class="text-gold text-2xl">✙</span> <span data-i18n="your_data">Your data</span></h2>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <input type="text" id="userWallet" class="w-full p-3 rounded-xl bg-black/50 border border-gold/30 text-white" placeholder="Your Solana wallet">
-            <input type="text" id="userName" class="w-full p-3 rounded-xl bg-black/50 border border-gold/30 text-white" placeholder="Your name">
+            <input type="text" id="userWallet" class="w-full p-3 rounded-xl bg-black/50 border border-gold/30 text-white" data-i18n-placeholder="wallet_placeholder">
+            <input type="text" id="userName" class="w-full p-3 rounded-xl bg-black/50 border border-gold/30 text-white" data-i18n-placeholder="name_placeholder">
         </div>
-        <button id="saveDataBtn" class="btn-primary w-full md:w-auto mt-4 px-8 py-2 rounded-full text-sm">✙ Save</button>
+        <button id="saveDataBtn" class="btn-primary w-full md:w-auto mt-4 px-8 py-2 rounded-full text-sm"><span data-i18n="save">✙ Save</span></button>
     </div>
 
     <!-- Счётчики -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-5 mb-8">
-        <div class="glass text-center border-l-4 border-gold"><div class="text-sm opacity-70">📿 For God</div><div class="text-3xl font-bold text-gold-light" id="forGodCount">0</div></div>
-        <div class="glass text-center border-l-4 border-gold"><div class="text-sm opacity-70">💀 Against God</div><div class="text-3xl font-bold text-red-400" id="againstGodCount">0</div></div>
-        <div class="glass text-center border-l-4 border-gold"><div class="text-sm opacity-70">🕯️ Candles burning</div><div class="text-3xl font-bold text-amber-400" id="candlesCount">0</div></div>
+        <div class="glass text-center border-l-4 border-gold"><div class="text-sm opacity-70">📿 <span data-i18n="forGod">For God</span></div><div class="text-3xl font-bold text-gold-light" id="forGodCount">0</div></div>
+        <div class="glass text-center border-l-4 border-gold"><div class="text-sm opacity-70">💀 <span data-i18n="againstGod">Against God</span></div><div class="text-3xl font-bold text-red-400" id="againstGodCount">0</div></div>
+        <div class="glass text-center border-l-4 border-gold"><div class="text-sm opacity-70">🕯️ <span data-i18n="candles_count">Candles burning</span></div><div class="text-3xl font-bold text-amber-400" id="candlesCount">0</div></div>
     </div>
 
-    <!-- Токены (пример с адресами) -->
+    <!-- Токены -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
         <div class="glass token-card text-center">
             <img src="https://raw.githubusercontent.com/byt-assist/catholic-chainbank/refs/heads/main/deus.png" class="w-24 h-24 mx-auto mb-3 rounded-full border-2 border-gold">
             <h2 class="text-2xl font-bold">VBDT (DEUS)</h2>
             <div class="text-2xl font-bold mt-2 text-gold-light">$101.82</div>
-            <button id="againstGodBtn" class="btn-danger w-full py-2 rounded-full text-sm mt-3">💀 Against God</button>
+            <button id="againstGodBtn" class="btn-danger w-full py-2 rounded-full text-sm mt-3"><span data-i18n="against_btn">💀 Against God</span></button>
         </div>
         <div class="glass token-card text-center">
             <img src="https://raw.githubusercontent.com/byt-assist/catholic-chainbank/refs/heads/main/sanctus.png" class="w-24 h-24 mx-auto mb-3 rounded-full border-2 border-gold">
             <h2 class="text-2xl font-bold">VBST (SANCTUS)</h2>
             <div class="text-2xl font-bold mt-2 text-gold-light">$1.00</div>
-            <button id="eternalBtn" class="btn-primary w-full py-2 rounded-full text-sm mt-3">✨ Eternal Candle</button>
+            <button id="eternalBtn" class="btn-primary w-full py-2 rounded-full text-sm mt-3"><span data-i18n="eternal_btn">✨ Eternal Candle</span></button>
         </div>
         <div class="glass token-card text-center">
             <img src="https://raw.githubusercontent.com/byt-assist/catholic-chainbank/refs/heads/main/diabolus.png" class="w-24 h-24 mx-auto mb-3 rounded-full border-2 border-gold">
             <h2 class="text-2xl font-bold">VBDC (DIABOLUS)</h2>
             <div class="text-2xl font-bold mt-2 text-gold-light">$0.99</div>
-            <button id="forGodBtn" class="btn-primary w-full py-2 rounded-full text-sm mt-3">📿 For God</button>
+            <button id="forGodBtn" class="btn-primary w-full py-2 rounded-full text-sm mt-3"><span data-i18n="for_btn">📿 For God</span></button>
         </div>
+    </div>
+
+    <!-- Форма подтверждения TXID -->
+    <div class="glass" id="txidForm" style="display:none;">
+        <h2 class="text-xl font-bold mb-3"><span data-i18n="verify_title">Confirmation</span></h2>
+        <p id="txActionDesc" class="text-sm mb-3"></p>
+        <input type="text" id="txidInput" class="w-full p-3 rounded-xl bg-black/50 border border-gold/30 mb-3" data-i18n-placeholder="txid_placeholder">
+        <button id="verifyBtn" class="btn-primary w-full py-2 rounded-full"><span data-i18n="verify_btn">✙ Verify</span></button>
+        <div id="verifyStatus" class="text-sm mt-3 text-center"></div>
     </div>
 
     <!-- Прямые пожертвования -->
     <div class="glass text-center">
-        <h2 class="text-xl font-bold mb-3">🤝 Direct donations (SOL / USDC)</h2>
+        <h2 class="text-xl font-bold mb-3" data-i18n="direct_donations">🤝 Direct donations (SOL / USDC)</h2>
         <div class="bg-black/50 p-3 rounded-xl font-mono text-sm break-all">GD7BH3LZ1JNyn5Nb5w4C4b2iR6FTW5dd6aN4vczwQdkD</div>
-        <button id="copyWalletBtn" class="btn-primary mt-3 py-1 px-5 rounded-full text-sm">📋 Copy</button>
+        <button id="copyWalletBtn" class="btn-primary mt-3 py-1 px-5 rounded-full text-sm"><span data-i18n="copy">📋 Copy</span></button>
     </div>
 
     <!-- SWIFT -->
     <div class="glass">
-        <h2 class="text-xl font-bold mb-3">🏦 Large donations (SWIFT / SEPA)</h2>
-        <p class="text-sm mb-3">For donations from $1000. After transfer, contact us:</p>
+        <h2 class="text-xl font-bold mb-3" data-i18n="large_donations">🏦 Large donations (SWIFT / SEPA)</h2>
+        <p class="text-sm mb-3" data-i18n="large_desc">For donations from $1000. After transfer, contact us:</p>
         <div class="flex flex-wrap gap-4">
             <a href="mailto:donatedeus@gmail.com" class="text-gold-light underline">📧 donatedeus@gmail.com</a>
             <a href="https://t.me/BOYMAT_token_BYT" class="text-gold-light underline">💬 Telegram</a>
@@ -132,17 +141,17 @@
 
     <!-- Рефералка -->
     <div class="glass">
-        <h2 class="text-xl font-bold mb-3">👥 Refer a friend</h2>
+        <h2 class="text-xl font-bold mb-3" data-i18n="refer">👥 Refer a friend</h2>
         <div class="flex gap-2">
             <input type="text" id="refLink" readonly class="w-full p-2 rounded-xl bg-black/50 border border-gold/30">
-            <button id="copyRefBtn" class="btn-primary px-4 py-2 rounded-full">📋 Copy</button>
+            <button id="copyRefBtn" class="btn-primary px-4 py-2 rounded-full"><span data-i18n="copy">📋 Copy</span></button>
         </div>
     </div>
 
 </div>
 
 <script>
-// Адреса токенов (католических)
+// Адреса токенов
 const ADDRESSES = {
     DEUS: "AXhysCBFq7JAoBxU7osLTj6wq9VjJxESiv5Z759ZfBmZ",
     SANCTUS: "8mse7Sm7xy1pfp6cP8LdZ1oh2RsdGAZajuEENDd2tbbk",
@@ -161,17 +170,17 @@ document.getElementById('saveDataBtn').onclick = () => {
     localStorage.setItem('userName', document.getElementById('userName').value);
     userWallet = document.getElementById('userWallet').value;
     userName = document.getElementById('userName').value;
-    alert('Saved');
+    alert(translations[currentLang]?.saved_msg || 'Saved');
 };
 
 document.getElementById('copyWalletBtn').onclick = () => {
     navigator.clipboard.writeText("GD7BH3LZ1JNyn5Nb5w4C4b2iR6FTW5dd6aN4vczwQdkD");
-    alert('Copied');
+    alert(translations[currentLang]?.copied_msg || 'Copied');
 };
 
 function showTxidForm(action, desc) {
     if (!userWallet) {
-        alert('Enter wallet');
+        alert(translations[currentLang]?.need_wallet || 'Enter wallet');
         return;
     }
     currentAction = action;
@@ -188,7 +197,7 @@ document.getElementById('eternalBtn').onclick = () => showTxidForm('eternal', `S
 document.getElementById('verifyBtn').onclick = async () => {
     const txid = document.getElementById('txidInput').value.trim();
     if (!txid) {
-        alert('Enter TXID');
+        alert(translations[currentLang]?.need_txid || 'Enter TXID');
         return;
     }
     document.getElementById('verifyStatus').innerHTML = '⏳...';
@@ -251,13 +260,13 @@ function updateCounters() {
 setInterval(updateCounters, 60000);
 updateCounters();
 
-// Календарь
+// Календарь (католический)
 const catholicSaints = {5: {20: "St. Bernardine of Siena"}, 5: {21: "St. Christopher Magallanes"}};
 const today = new Date();
 const month = today.getMonth() + 1;
 const day = today.getDate();
-let saint = (catholicSaints[month] && catholicSaints[month][day]) ? catholicSaints[month][day] : "Ordinary Time";
-document.getElementById('calendar').innerHTML = `<div class="text-center"><div class="text-gold-light text-lg">${today.toLocaleDateString('en', {month: 'long', day: 'numeric'})}</div><div class="text-xl font-bold">${saint}</div><div class="text-sm opacity-70 mt-1">🕯️ Light a candle in his honor</div></div>`;
+let saint = (catholicSaints[month] && catholicSaints[month][day]) ? catholicSaints[month][day] : (translations[currentLang]?.ordinary_day || "Ordinary Time");
+document.getElementById('calendar').innerHTML = `<div class="text-center"><div class="text-gold-light text-lg">${today.toLocaleDateString(currentLang === 'ru' ? 'ru' : 'en', {month: 'long', day: 'numeric'})}</div><div class="text-xl font-bold">${saint}</div><div class="text-sm opacity-70 mt-1"><span data-i18n="light_candle">🕯️ Light a candle in his honor</span></div></div>`;
 
 let candles = JSON.parse(localStorage.getItem('candles') || '[]');
 let donors = {};
@@ -267,7 +276,7 @@ candles.forEach(c => {
 });
 let sorted = Object.entries(donors).sort((a, b) => b[1] - a[1]).slice(0, 5);
 let topHtml = sorted.map(([name, count]) => `<div class="flex justify-between"><span>✝️ ${name}</span><span class="text-gold-light">${count} candles</span></div>`).join('');
-if (!topHtml) topHtml = '<div class="opacity-60">No donors yet. Be the first!</div>';
+if (!topHtml) topHtml = `<div class="opacity-60" data-i18n="no_donors">${translations[currentLang]?.no_donors || 'No donors yet. Be the first!'}</div>`;
 document.getElementById('topDonors').innerHTML = topHtml;
 
 let refLink = document.getElementById('refLink');
@@ -275,7 +284,7 @@ refLink.value = `${window.location.origin}?ref=${userWallet || 'guest'}`;
 document.getElementById('copyRefBtn').onclick = () => {
     refLink.select();
     document.execCommand('copy');
-    alert('Copied!');
+    alert(translations[currentLang]?.copied_msg || 'Copied!');
 };
 </script>
 </body>
