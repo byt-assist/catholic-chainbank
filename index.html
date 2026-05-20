@@ -53,7 +53,7 @@
         <a href="parishes.html" class="btn-secondary px-4 py-2 rounded-full text-sm flex items-center gap-1"><span>⛪</span> <span data-i18n="parishes">Parishes</span></a>
     </div>
 
-    <!-- Календарь и трансляция -->
+    <!-- Календарь и трансляция (исправлено) -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
         <div class="glass">
             <h2 class="text-xl font-bold mb-3" data-i18n="calendar">📅 Liturgical Calendar</h2>
@@ -62,9 +62,14 @@
         <div class="glass">
             <h2 class="text-xl font-bold mb-3" data-i18n="live_title">📺 Vatican Live Stream</h2>
             <div class="aspect-video">
-                <iframe src="https://www.youtube.com/embed/live_stream?channel=UCxIsef9129LJO2e6h8hR-Ag" class="w-full h-full rounded-xl" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                <!-- Новая работающая трансляция Vatican Media -->
+                <iframe src="https://www.youtube.com/embed/K-zknhNgt7Y?autoplay=1&mute=1" 
+                        class="w-full h-full rounded-xl" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                        allowfullscreen>
+                </iframe>
             </div>
-            <p class="text-xs opacity-60 text-center mt-2" data-i18n="live_source">📡 Vatican Media official stream</p>
+            <p class="text-xs opacity-60 text-center mt-2" data-i18n="live_source">📡 Vatican Media official stream (Français)</p>
         </div>
     </div>
 
@@ -165,15 +170,30 @@ let userName = localStorage.getItem('userName') || '';
 document.getElementById('userWallet').value = userWallet;
 document.getElementById('userName').value = userName;
 
-// Функция обновления календаря (переводится при смене языка)
+// Функция обновления календаря (с переводами имён святых)
 function updateCalendar() {
-    const catholicSaints = {5: {20: "St. Bernardine of Siena", 21: "St. Christopher Magallanes"}};
+    // Католические святые на разных языках
+    const catholicSaints = {
+        en: {5: {20: "St. Bernardine of Siena", 21: "St. Christopher Magallanes"}},
+        ru: {5: {20: "Св. Бернардин Сиенский", 21: "Св. Христофор Магалланес"}},
+        es: {5: {20: "San Bernardino de Siena", 21: "San Cristóbal Magallanes"}},
+        zh: {5: {20: "锡耶纳的圣伯纳丁", 21: "圣克里斯托弗·马加兰斯"}},
+        fr: {5: {20: "Saint Bernardin de Sienne", 21: "Saint Christophe Magallanes"}},
+        de: {5: {20: "Hl. Bernhardin von Siena", 21: "Hl. Christophorus Magallanes"}},
+        it: {5: {20: "San Bernardino da Siena", 21: "San Cristoforo Magallanes"}},
+        ja: {5: {20: "シエナの聖ベルナルディーノ", 21: "聖クリストファー・マガラネス"}}
+    };
+    
     const today = new Date();
     const month = today.getMonth() + 1;
     const day = today.getDate();
-    let saint = (catholicSaints[month] && catholicSaints[month][day]) ? catholicSaints[month][day] : (translations[currentLang]?.ordinary_day || "Ordinary Time");
+    
+    const langSaints = catholicSaints[currentLang] || catholicSaints.en;
+    let saint = (langSaints[month] && langSaints[month][day]) ? langSaints[month][day] : (translations[currentLang]?.ordinary_day || "Ordinary Time");
+    
     const dateStr = today.toLocaleDateString(currentLang === 'ru' ? 'ru' : 'en', {month: 'long', day: 'numeric'});
     const lightCandleText = translations[currentLang]?.light_candle || "🕯️ Light a candle in his honor";
+    
     document.getElementById('calendar').innerHTML = `<div class="text-center"><div class="text-gold-light text-lg">${dateStr}</div><div class="text-xl font-bold">${saint}</div><div class="text-sm opacity-70 mt-1">${lightCandleText}</div></div>`;
 }
 
@@ -191,7 +211,7 @@ function updateTopDonors() {
     document.getElementById('topDonors').innerHTML = topHtml;
 }
 
-// Переопределяем setLanguage, чтобы обновлять календарь и топ доноров
+// Переопределяем setLanguage
 const originalSetLanguage = setLanguage;
 window.setLanguage = function(lang) {
     originalSetLanguage(lang);
@@ -200,7 +220,7 @@ window.setLanguage = function(lang) {
 };
 setLanguage = window.setLanguage;
 
-// Сохранение данных пользователя
+// Сохранение данных
 document.getElementById('saveDataBtn').onclick = () => {
     localStorage.setItem('userWallet', document.getElementById('userWallet').value);
     localStorage.setItem('userName', document.getElementById('userName').value);
@@ -209,13 +229,11 @@ document.getElementById('saveDataBtn').onclick = () => {
     alert(translations[currentLang]?.saved_msg || 'Saved');
 };
 
-// Копирование кошелька
 document.getElementById('copyWalletBtn').onclick = () => {
     navigator.clipboard.writeText("GD7BH3LZ1JNyn5Nb5w4C4b2iR6FTW5dd6aN4vczwQdkD");
     alert(translations[currentLang]?.copied_msg || 'Copied');
 };
 
-// Показать форму ввода TXID
 function showTxidForm(action, desc) {
     if (!userWallet) {
         alert(translations[currentLang]?.need_wallet || 'Enter wallet');
@@ -232,7 +250,6 @@ document.getElementById('forGodBtn').onclick = () => showTxidForm('forGod', `Sen
 document.getElementById('againstGodBtn').onclick = () => showTxidForm('againstGod', `Send 1 DEUS to DIABOLUS (${ADDRESSES.DIABOLUS}). Paste TXID:`);
 document.getElementById('eternalBtn').onclick = () => showTxidForm('eternal', `Send 1 SANCTUS + 1 VBDC to DEUS (${ADDRESSES.DEUS}). Paste TXID:`);
 
-// Проверка TXID через Solscan
 document.getElementById('verifyBtn').onclick = async () => {
     const txid = document.getElementById('txidInput').value.trim();
     if (!txid) {
@@ -301,11 +318,9 @@ function updateCounters() {
 setInterval(updateCounters, 60000);
 updateCounters();
 
-// Инициализация календаря и топа доноров
 updateCalendar();
 updateTopDonors();
 
-// Реферальная ссылка
 let refLink = document.getElementById('refLink');
 refLink.value = `${window.location.origin}?ref=${userWallet || 'guest'}`;
 document.getElementById('copyRefBtn').onclick = () => {
