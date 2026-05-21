@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Whitepaper · Vatican Bank (Catholic)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="lang.js"></script>
+    <style>
+        body{background:linear-gradient(135deg,#2B2B2B 0%,#1A1A1A 100%);color:#F5F0E8;font-family:'Inter',sans-serif;}
+        .glass{background:rgba(43,43,43,0.85);backdrop-filter:blur(12px);border-radius:24px;padding:1.5rem;margin-bottom:1.5rem;border:1px solid rgba(197,160,89,0.4);}
+        .btn-secondary{background:rgba(197,160,89,0.15);border:1px solid rgba(197,160,89,0.4);padding:0.5rem 1.2rem;border-radius:40px;display:inline-block;cursor:pointer;text-decoration:none;color:#F5F0E8;}
+        h1{font-family:'Cormorant Garamond',serif; color:#FFDF85;}
+        h2{font-family:'Cormorant Garamond',serif; color:#FFDF85; margin-top:1.5rem; margin-bottom:0.75rem;}
+        h3{font-family:'Cormorant Garamond',serif; color:#FFDF85; margin-top:1rem; margin-bottom:0.5rem; font-size:1.25rem;}
+        hr{border-color:rgba(197,160,89,0.4); margin:1.5rem 0;}
+        table{width:100%; border-collapse:collapse; margin:1rem 0;}
+        th,td{border:1px solid rgba(197,160,89,0.4); padding:0.5rem; text-align:left;}
+        th{background:rgba(197,160,89,0.2);}
+        code{background:rgba(0,0,0,0.5); padding:0.2rem 0.4rem; border-radius:0.5rem; font-size:0.8rem; word-break:break-all;}
+        a{color:#FFDF85; text-decoration:underline;}
+        a:hover{color:#C5A059;}
+        .copy-btn{background:#C5A059; color:#1A1510; padding:0.2rem 0.5rem; border-radius:0.5rem; font-size:0.7rem; cursor:pointer; margin-left:0.5rem;}
+    </style>
+</head>
+<body class="p-4 md:p-6">
+<div class="max-w-4xl mx-auto">
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-3xl md:text-4xl font-bold">📄 Whitepaper · Vatican Bank</h1>
+        <a href="index.html" class="btn-secondary">← Back to Home</a>
+    </div>
+
+    <div class="glass">
+        <h2>1. Mission & Vision</h2>
+        <p>Vatican Bank (Catholic Branch) bridges ancient Catholic Christian traditions with modern blockchain technology. We provide a transparent, secure, and decentralized platform for spiritual acts: candles, prayers, donations, confession, and charity. Our mission is to make faith accessible to the digital generation while maintaining full respect for Catholic traditions.</p>
+
+        <h2>2. Technology Stack</h2>
+        <ul class="list-disc pl-6 space-y-1">
+            <li><strong>Blockchain:</strong> Solana (Mainnet)</li>
+            <li><strong>Token Standard:</strong> Token-2022</li>
+            <li><strong>Smart Contracts:</strong> Verified on Solscan</li>
+            <li><strong>Frontend:</strong> HTML/CSS/JS, hosted on GitHub Pages</li>
+            <li><strong>Transaction Verification:</strong> Solscan Public API</li>
+        </ul>
+
+        <h2>3. Tokens</h2>
+        <div class="overflow-x-auto">
+            <table>
+                <thead><tr><th>Token</th><th>Full Name</th><th>Mint Address</th><th>Role</th></tr></thead>
+                <tbody>
+                    <tr><td><strong>VBDT</strong></td><td>Vatican Bank Deus Token</td><td><code>AXhysCBFq7JAoBxU7osLTj6wq9VjJxESiv5Z759ZfBmZ</code><button class="copy-btn" onclick="navigator.clipboard.writeText('AXhysCBFq7JAoBxU7osLTj6wq9VjJxESiv5Z759ZfBmZ')">📋</button></td><td>Governance, status</td></tr>
+                    <tr><td><strong>VBST</strong></td><td>Vatican Bank Sanctus Token</td><td><code>8mse7Sm7xy1pfp6cP8LdZ1oh2RsdGAZajuEENDd2tbbk</code><button class="copy-btn" onclick="navigator.clipboard.writeText('8mse7Sm7xy1pfp6cP8LdZ1oh2RsdGAZajuEENDd2tbbk')">📋</button></td><td>Charity, candles, prayers</td></tr>
+                    <tr><td><strong>VBDC</strong></td><td>Vatican Bank Diabolus Coin</td><td><code>2zaWrMgqduTVfVRbnzPxuk4Sd9v5ifAsfVeSCkPgYYXj</code><button class="copy-btn" onclick="navigator.clipboard.writeText('2zaWrMgqduTVfVRbnzPxuk4Sd9v5ifAsfVeSCkPgYYXj')">📋</button></td><td>Temptation, against God actions</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h3>Tokenomics</h3>
+        <ul class="list-disc pl-6 space-y-1">
+            <li><strong>Total supply per token:</strong> 10,000,000,000 (10 billion)</li>
+            <li><strong>Decimals:</strong> 9</li>
+            <li><strong>Transfer fee:</strong> 0%</li>
+            <li><strong>Mint & Freeze authorities:</strong> Revoked (fixed supply)</li>
+        </ul>
+
+        <h2>4. Core Mechanics</h2>
+        <ul class="list-disc pl-6 space-y-1">
+            <li><strong>For God:</strong> Send 1 VBDC to VBDT address → light a candle (1 hour)</li>
+            <li><strong>Against God:</strong> Send 1 VBDT to VBDC address → appear on the "Sinners Wall"</li>
+            <li><strong>Eternal Candle:</strong> Send 1 VBST + 1 VBDC to VBDT address → eternal candle (never expires)</li>
+            <li><strong>40+ Spiritual Deeds:</strong> Various actions (prayers, memorials, donations, NFT icons, pilgrim certificates)</li>
+            <li><strong>Confession:</strong> Anonymous confession with automatic answer</li>
+            <li><strong>DAO:</strong> VBDT holders can vote on treasury allocation</li>
+        </ul>
+
+        <h2>5. Smart Contract Security</h2>
+        <ul class="list-disc pl-6 space-y-1">
+            <li>All token contracts are verified on Solscan</li>
+            <li>Mint and freeze authorities are revoked — no one can mint new tokens or freeze wallets</li>
+            <li>All transactions are recorded on Solana blockchain and publicly visible</li>
+            <li>No central control — the website only provides a convenient interface</li>
+        </ul>
+
+        <h2>6. Roadmap</h2>
+        <ul class="list-disc pl-6 space-y-1">
+            <li><strong>Q1 2025:</strong> Token creation (VBDT, VBST, VBDC), website launch, basic mechanics</li>
+            <li><strong>Q2 2025:</strong> 40 Spiritual Deeds, Confession page, DAO voting, Charity funds, Memory Book</li>
+            <li><strong>Q3 2025:</strong> NFT icons, Pilgrim tracker, Parish support program</li>
+            <li><strong>Q4 2025:</strong> Integration with real churches, partnerships, marketing campaign</li>
+        </ul>
+
+        <h2>7. Revenue Model</h2>
+        <ul class="list-disc pl-6 space-y-1">
+            <li><strong>Token sales:</strong> Users buy tokens on DEX (Meteora, Jupiter)</li>
+            <li><strong>Transaction fees:</strong> None (0% transfer fee) — users pay Solana gas fees</li>
+            <li><strong>Future optional services:</strong> Premium confession (chat with a real priest), parish subscriptions</li>
+        </ul>
+
+        <h2>8. Legal Disclaimer</h2>
+        <p>Vatican Bank tokens are not securities, investment contracts, or financial instruments. They are designed exclusively for spiritual and charitable purposes within the ecosystem. The project does not guarantee any financial return. Users are responsible for complying with their local laws regarding cryptocurrencies.</p>
+
+        <hr>
+        <div class="text-center text-xs opacity-50">
+            © 2025 Vatican Bank (Catholic Branch) · Faith, hope, love and blockchain
+        </div>
+    </div>
+</div>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    if (typeof renderLangButtons !== 'undefined') renderLangButtons();
+    if (typeof setLanguage !== 'undefined') setLanguage(localStorage.getItem('chainbank_lang') || 'ru');
+});
+</script>
+</body>
+</html>
