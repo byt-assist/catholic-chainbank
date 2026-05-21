@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>25 духовных дел · Vatican Bank</title>
+    <title>40 Spiritual Deeds · Vatican Bank</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="lang.js"></script>
     <style>
@@ -19,8 +19,13 @@
 </head>
 <body class="p-4">
 <div class="max-w-6xl mx-auto">
-    <div class="flex justify-between items-center mb-6"><h1 class="text-3xl font-bold">🙏 25 духовных дел</h1><a href="index.html" class="btn-secondary">← На главную</a></div>
-    <div class="glass text-center mb-6"><p class="italic">Нажмите на любое дело → откроется окно с адресом и инструкцией → отправьте токены → вставьте TXID → получите подтверждение</p></div>
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-3xl font-bold" data-i18n="actions_title">🙏 40 Spiritual Deeds</h1>
+        <a href="index.html" class="btn-secondary" data-i18n="back">← Back to Home</a>
+    </div>
+    <div class="glass text-center mb-6">
+        <p class="italic" data-i18n="actions_desc">Click on any deed → a window with the address and instructions will open → send tokens → paste TXID → get confirmation</p>
+    </div>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="actionsList"></div>
 </div>
 
@@ -29,54 +34,88 @@
         <h3 id="modalTitle" class="text-xl font-bold mb-2 text-gold-light"></h3>
         <p id="modalDesc" class="text-sm mb-3"></p>
         <div class="address-box" id="modalAddress"></div>
-        <div class="flex gap-2 mb-3"><button id="copyAddressBtn" class="copy-btn">📋 Копировать адрес</button></div>
-        <p class="text-xs opacity-70 mb-2">После отправки вставьте TXID:</p>
-        <input type="text" id="txidInput" class="w-full p-2 rounded bg-black/50 border border-gold/30 mb-2" placeholder="Вставьте TXID">
-        <button id="confirmActionBtn" class="btn-primary w-full py-2 rounded-full">✅ Подтвердить</button>
+        <div class="flex gap-2 mb-3"><button id="copyAddressBtn" class="copy-btn" data-i18n="copy_addr">📋 Copy address</button></div>
+        <p class="text-xs opacity-70 mb-2" data-i18n="after_send">After sending, paste TXID:</p>
+        <input type="text" id="txidInput" class="w-full p-2 rounded bg-black/50 border border-gold/30 mb-2" data-i18n-placeholder="txid_placeholder">
+        <button id="confirmActionBtn" class="btn-primary w-full py-2 rounded-full" data-i18n="confirm_btn">✅ Confirm</button>
         <div id="actionStatus" class="text-xs mt-2 text-center"></div>
-        <button id="closeModalBtn" class="btn-secondary w-full mt-3 py-2 rounded-full">Закрыть</button>
+        <button id="closeModalBtn" class="btn-secondary w-full mt-3 py-2 rounded-full" data-i18n="close">Close</button>
     </div>
 </div>
 
 <script>
 const GOD_ADDRESS = "AXhysCBFq7JAoBxU7osLTj6wq9VjJxESiv5Z759ZfBmZ";
 const DEMON_ADDRESS = "2zaWrMgqduTVfVRbnzPxuk4Sd9v5ifAsfVeSCkPgYYXj";
-const actions = [
-    { id:1, name:"🕯️ Обычная свеча", desc:"Отправьте 1 VBST на адрес Бога", address:GOD_ADDRESS, token:"VBST", amount:"1" },
-    { id:2, name:"✨ Вечная свеча", desc:"Отправьте 1 VBST + 1 VBDC на адрес Бога", address:GOD_ADDRESS, token:"VBST+VBDC", amount:"1+1" },
-    { id:3, name:"🏛️ Соборная свеча", desc:"Отправьте 10 VBST на адрес Бога", address:GOD_ADDRESS, token:"VBST", amount:"10" },
-    { id:4, name:"📿 Именная молитва", desc:"Отправьте 5 VBST на адрес Бога", address:GOD_ADDRESS, token:"VBST", amount:"5" },
-    { id:5, name:"📆 Сорокоуст (40 дней)", desc:"Отправьте 40 VBST на адрес Бога", address:GOD_ADDRESS, token:"VBST", amount:"40" },
-    { id:6, name:"📅 Годовая свеча", desc:"Отправьте 365 VBST на адрес Бога", address:GOD_ADDRESS, token:"VBST", amount:"365" },
-    { id:7, name:"⛪ Поминовение в храме", desc:"Отправьте 100 VBST на адрес Бога", address:GOD_ADDRESS, token:"VBST", amount:"100" },
-    { id:8, name:"📖 Молитвенное правило", desc:"Отправьте 1 VBST на адрес Бога", address:GOD_ADDRESS, token:"VBST", amount:"1" },
-    { id:9, name:"🎨 Купить аватар святого", desc:"Отправьте 50 VBST на адрес Бога", address:GOD_ADDRESS, token:"VBST", amount:"50" },
-    { id:10, name:"🖼️ Разместить икону", desc:"Отправьте 100 VBST на адрес Бога", address:GOD_ADDRESS, token:"VBST", amount:"100" },
-    { id:11, name:"🙏 Молебен онлайн", desc:"Отправьте 20 VBST на адрес Бога", address:GOD_ADDRESS, token:"VBST", amount:"20" },
-    { id:12, name:"🤝 Пожертвование", desc:"Отправьте любую сумму VBST на адрес Бога", address:GOD_ADDRESS, token:"VBST", amount:"любая" },
-    { id:13, name:"🏅 Друг монастыря", desc:"Отправьте 50 VBST (месяц) на адрес Бога", address:GOD_ADDRESS, token:"VBST", amount:"50/мес" },
-    { id:14, name:"🗳️ Создать голосование", desc:"Отправьте 100 VBDT на адрес DEMON", address:DEMON_ADDRESS, token:"VBDT", amount:"100" },
-    { id:15, name:"⚡ Усилить голос", desc:"Отправьте 1000 VBDT на адрес DEMON", address:DEMON_ADDRESS, token:"VBDT", amount:"1000" },
-    { id:16, name:"👑 Роль Старейшина", desc:"Отправьте 500 VBST на адрес Бога", address:GOD_ADDRESS, token:"VBST", amount:"500" },
-    { id:17, name:"📢 Реклама на сайте", desc:"Отправьте 200 VBST на адрес Бога", address:GOD_ADDRESS, token:"VBST", amount:"200" },
-    { id:18, name:"🖼️ NFT-икона", desc:"Отправьте 50 VBST на адрес Бога", address:GOD_ADDRESS, token:"VBST", amount:"50" },
-    { id:19, name:"🕊️ Фрагмент мощей", desc:"Отправьте 500 VBST на адрес Бога", address:GOD_ADDRESS, token:"VBST", amount:"500" },
-    { id:20, name:"👥 12 апостолов", desc:"Отправьте 600 VBST на адрес Бога", address:GOD_ADDRESS, token:"VBST", amount:"600" },
-    { id:21, name:"🎓 Сертификат паломника", desc:"Отправьте 30 VBST на адрес Бога", address:GOD_ADDRESS, token:"VBST", amount:"30" },
-    { id:22, name:"💀 Осквернить свечу", desc:"Отправьте 1 VBDC на адрес Бога", address:GOD_ADDRESS, token:"VBDC", amount:"1" },
-    { id:23, name:"⚫ Чёрная свеча", desc:"Отправьте 1 VBDC на адрес Бога", address:GOD_ADDRESS, token:"VBDC", amount:"1" },
-    { id:24, name:"👿 Богохульник недели", desc:"Отправьте 100 VBDC на адрес Бога", address:GOD_ADDRESS, token:"VBDC", amount:"100" },
-    { id:25, name:"🗑️ Снять чужую икону", desc:"Отправьте 50 VBDC на адрес Бога", address:GOD_ADDRESS, token:"VBDC", amount:"50" }
-];
+
+const deedKeys = Array.from({length: 40}, (_, i) => ({ id: i+1, nameKey: `deed${i+1}`, descKey: `deed${i+1}_desc` }));
+
 let currentAction = null;
 let userWallet = localStorage.getItem('userWallet') || '';
+
 function renderActions() {
     const container = document.getElementById('actionsList');
-    container.innerHTML = actions.map(a => `<div class="glass p-4"><div class="font-bold text-lg">${a.name}</div><div class="text-sm opacity-80 my-2">${a.desc}</div><div class="text-xs text-gold-light">💰 Цена: ${a.amount} ${a.token}</div><button class="actionBtn mt-3 btn-primary w-full py-1 rounded-full text-sm" data-id="${a.id}">Выбрать</button></div>`).join('');
-    document.querySelectorAll('.actionBtn').forEach(btn => { btn.onclick = () => { const id = parseInt(btn.dataset.id); currentAction = actions.find(a => a.id === id); document.getElementById('modalTitle').innerText = currentAction.name; document.getElementById('modalDesc').innerHTML = `<strong>📤 Что делать:</strong> ${currentAction.desc}<br><strong>💰 Количество:</strong> ${currentAction.amount} ${currentAction.token}`; document.getElementById('modalAddress').innerHTML = `<strong>📤 Отправить на адрес:</strong><br>${currentAction.address}`; document.getElementById('txidInput').value = ''; document.getElementById('actionStatus').innerHTML = ''; document.getElementById('actionModal').style.display = 'flex'; }; });
+    container.innerHTML = deedKeys.map(d => {
+        const name = translations[currentLang]?.[d.nameKey] || d.nameKey;
+        const desc = translations[currentLang]?.[d.descKey] || d.descKey;
+        let address = GOD_ADDRESS;
+        let token = "VBST";
+        let amount = "1";
+        if (d.id === 2 || d.id === 22 || d.id === 23 || d.id === 24 || d.id === 25) {
+            token = "VBDC";
+            amount = d.id === 24 ? "100" : (d.id === 25 ? "50" : "1");
+        } else if (d.id === 14) { token = "VBDT"; amount = "100"; address = DEMON_ADDRESS; }
+        else if (d.id === 15) { token = "VBDT"; amount = "1000"; address = DEMON_ADDRESS; }
+        else if (d.id === 3) amount = "10";
+        else if (d.id === 4) amount = "5";
+        else if (d.id === 5) amount = "40";
+        else if (d.id === 6) amount = "365";
+        else if (d.id === 7) amount = "100";
+        else if (d.id === 9 || d.id === 18) amount = "50";
+        else if (d.id === 10) amount = "100";
+        else if (d.id === 11) amount = "20";
+        else if (d.id === 13) amount = "50";
+        else if (d.id === 16) amount = "500";
+        else if (d.id === 17) amount = "200";
+        else if (d.id === 19) amount = "500";
+        else if (d.id === 20) amount = "600";
+        else if (d.id === 21) amount = "30";
+        else if (d.id === 26) amount = "1";
+        else if (d.id === 27) amount = "3";
+        else if (d.id === 28) amount = "5";
+        else if (d.id === 29) amount = "2";
+        else if (d.id === 30) amount = "10";
+        else if (d.id === 32) amount = "2";
+        else if (d.id === 33) amount = "7";
+        else if (d.id === 35) amount = "3";
+        else if (d.id === 37) amount = "10";
+        else if (d.id === 38) amount = "5";
+        else if (d.id === 39) amount = "3";
+        else if (d.id === 40) amount = "2";
+        return `<div class="glass p-4"><div class="font-bold text-lg">${name}</div><div class="text-sm opacity-80 my-2">${desc}</div><div class="text-xs text-gold-light">💰 ${translations[currentLang]?.price || 'Price'}: ${amount} ${token}</div><button class="actionBtn mt-3 btn-primary w-full py-1 rounded-full text-sm" data-id="${d.id}" data-address="${address}" data-name="${name}" data-desc="${desc}" data-amount="${amount}" data-token="${token}">${translations[currentLang]?.select || 'Select'}</button></div>`;
+    }).join('');
+    
+    document.querySelectorAll('.actionBtn').forEach(btn => {
+        btn.onclick = () => {
+            currentAction = {
+                id: parseInt(btn.dataset.id),
+                name: btn.dataset.name,
+                desc: btn.dataset.desc,
+                address: btn.dataset.address,
+                amount: btn.dataset.amount,
+                token: btn.dataset.token
+            };
+            document.getElementById('modalTitle').innerText = currentAction.name;
+            document.getElementById('modalDesc').innerHTML = `<strong>📤 ${translations[currentLang]?.what_to_do || 'What to do'}:</strong> ${currentAction.desc}<br><strong>💰 ${translations[currentLang]?.amount || 'Amount'}:</strong> ${currentAction.amount} ${currentAction.token}`;
+            document.getElementById('modalAddress').innerHTML = `<strong>📤 ${translations[currentLang]?.send_to || 'Send to address'}:</strong><br>${currentAction.address}`;
+            document.getElementById('txidInput').value = '';
+            document.getElementById('actionStatus').innerHTML = '';
+            document.getElementById('actionModal').style.display = 'flex';
+        };
+    });
 }
-document.getElementById('copyAddressBtn').onclick = () => { if (currentAction) { navigator.clipboard.writeText(currentAction.address); alert('Адрес скопирован: ' + currentAction.address); } };
-document.getElementById('confirmActionBtn').onclick = async () => { const txid = document.getElementById('txidInput').value.trim(); if (!txid) { alert('Введите TXID'); return; } if (!userWallet) { alert('Сначала сохраните ваш кошелёк на главной странице'); return; } document.getElementById('actionStatus').innerHTML = '⏳ Проверяем...'; try { const url = `https://public-api.solscan.io/transaction/${txid}`; const resp = await fetch(url); const data = await resp.json(); if (!data || !data.txId) throw new Error('Транзакция не найдена'); const signer = data.signer?.[0] || data.accountKeys?.[0]; if (signer !== userWallet) throw new Error('TXID не с вашего кошелька'); let completed = JSON.parse(localStorage.getItem('completedActions') || '[]'); completed.push({ actionId: currentAction.id, txid, date: new Date().toISOString() }); localStorage.setItem('completedActions', JSON.stringify(completed)); document.getElementById('actionStatus').innerHTML = '✅ Дело засчитано!'; setTimeout(() => { document.getElementById('actionModal').style.display = 'none'; }, 1500); } catch (err) { document.getElementById('actionStatus').innerHTML = `❌ ${err.message}`; } };
+
+document.getElementById('copyAddressBtn').onclick = () => { if (currentAction) { navigator.clipboard.writeText(currentAction.address); alert('Address copied: ' + currentAction.address); } };
+document.getElementById('confirmActionBtn').onclick = async () => { const txid = document.getElementById('txidInput').value.trim(); if (!txid) { alert('Enter TXID'); return; } if (!userWallet) { alert('First save your wallet on the main page'); return; } document.getElementById('actionStatus').innerHTML = '⏳ Verifying...'; try { const url = `https://public-api.solscan.io/transaction/${txid}`; const resp = await fetch(url); const data = await resp.json(); if (!data || !data.txId) throw new Error('Transaction not found'); const signer = data.signer?.[0] || data.accountKeys?.[0]; if (signer !== userWallet) throw new Error('TXID not from your wallet'); let completed = JSON.parse(localStorage.getItem('completedActions') || '[]'); completed.push({ actionId: currentAction.id, txid, date: new Date().toISOString() }); localStorage.setItem('completedActions', JSON.stringify(completed)); document.getElementById('actionStatus').innerHTML = '✅ ' + (translations[currentLang]?.deed_done || 'Deed counted!'); setTimeout(() => { document.getElementById('actionModal').style.display = 'none'; }, 1500); } catch (err) { document.getElementById('actionStatus').innerHTML = `❌ ${err.message}`; } };
 document.getElementById('closeModalBtn').onclick = () => { document.getElementById('actionModal').style.display = 'none'; };
 window.onclick = (e) => { if (e.target === document.getElementById('actionModal')) document.getElementById('actionModal').style.display = 'none'; };
 renderActions();
